@@ -11,47 +11,47 @@ jobs:
     name: Android Build
     runs-on: ubuntu-latest
     steps:
-      name: Checkout
-      - uses: actions/checkout@v2
+      - name: Checkout
+        uses: actions/checkout@v2
 
-      name: Setup Node
-      - uses: actions/setup-node@master
+      - name: Setup Node
+        uses: actions/setup-node@master
 
-      name: Setup Yarn Cache
-      - uses: c-hive/gha-yarn-cache@v1
+      - name: Setup Yarn Cache
+        uses: c-hive/gha-yarn-cache@v1
 
-      name: Install node modules
-      - run: |
-        yarn install
+      - name: Install node modules
+          run: |
+            yarn install
 
-      name: Runs testing
-      - run: |
-        yarn test-ci
+      - name: Runs testing
+          run: |
+            yarn test-ci
 
-      name: Cache Gradle Wrapper
-      - uses: actions/cache@v2
-      with:
-        path: ~/.gradle/wrapper
-        key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+      - name: Cache Gradle Wrapper
+          uses: actions/cache@v2
+          with:
+            path: ~/.gradle/wrapper
+            key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
 
-      name: Cache Gradle Dependencies
-      uses: actions/cache@v2
-      with:
-        path: ~/.gradle/caches
-        key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
-        restore-keys: |
-          ${{ runner.os }}-gradle-caches-
+      - name: Cache Gradle Dependencies
+          uses: actions/cache@v2
+          with:
+            path: ~/.gradle/caches
+            key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
+            restore-keys: |
+              ${{ runner.os }}-gradle-caches-
 
-      name: Make Gradlew Executable
-      run: cd android && chmod +x ./gradlew
+      - name: Make Gradlew Executable
+        run: cd android && chmod +x ./gradlew
 
-      name: Build Android App Bundle
-      run: |
-        cd android && ./gradlew bundleRelease --no-daemon
+      - name: Build Android App Bundle
+        run: |
+          cd android && ./gradlew bundleRelease --no-daemon
 
-    # TO ADD - ANDROID SIGN EDIT
+       # TO ADD - ANDROID SIGN EDIT
 
-      name: Upload Artifact
-      uses: actions/upload-artifact@v2
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v2
 
      # TO ADD - ANDROID SIGN EDIT
