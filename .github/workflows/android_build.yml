@@ -34,7 +34,7 @@ jobs:
       - name: Build app
         run: |
           eas build --local \
-            --output= ./app-build \
+            --output=./app-build \
             --non-interactive \
             --platform android 
 
@@ -42,4 +42,4 @@ jobs:
         uses: actions/upload-artifact@v2
         with:
           name: depfitness-build-android
-          path: ./app-build
+          path: app-build.apk
