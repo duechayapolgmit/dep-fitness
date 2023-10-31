@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "DepFitness",
-    "slug": "DepFitness",
+    "name": "dep-fitness",
+    "slug": "dep-fitness",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
