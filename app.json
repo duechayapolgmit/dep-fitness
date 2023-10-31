@@ -32,7 +32,6 @@
         "projectId": "286b715d-3177-4a33-a537-622a583926cb"
       }
     },
-    "owner": "dep-fitness",
-    "package": "com.depfitness.app"
+    "owner": "dep-fitness"
   }
 }
