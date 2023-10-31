@@ -33,12 +33,10 @@ jobs:
 
       - name: Build app
         run: |
-          eas build --local \
-            --non-interactive \
-            --output=./app-build \
-            --platform=android \
-            --profile=development
-
+          eas build --local --non-interactive \
+          --platform android --profile dev \
+          --output=./app-build \
+            
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
