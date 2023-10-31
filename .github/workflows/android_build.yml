@@ -12,8 +12,7 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      # Checkout Repository
-      - uses: actions/checkout@v2 
+      - uses: actions/checkout@v2         # Checkout Repository
 
       - uses: actions/setup-node@master
       - uses: c-hive/gha-yarn-cache@v1
