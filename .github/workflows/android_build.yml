@@ -27,11 +27,11 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Install dependencies
+      - name: Setup EAS Local Builds
         run: npm install
 
       - name: Build app
-        run: eas build --platform android --non-interactive
+        run: eas build --local --non-interactive --platform android 
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
