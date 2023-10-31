@@ -40,7 +40,7 @@ jobs:
             --profile=development
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v3
         with:
           name: depfitness-build-android
-          path: app-build
+          path: ./app-build
