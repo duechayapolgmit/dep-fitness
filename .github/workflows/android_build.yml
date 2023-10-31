@@ -7,15 +7,13 @@ on:
     types: [published]
 
 jobs:
-  android-build:
+  build:
     name: Android Build
     runs-on: ubuntu-latest
-
     steps:
       - uses: actions/checkout@v2         # Checkout Repository
-
-      - uses: actions/setup-node@master
-      - uses: c-hive/gha-yarn-cache@v1
+      - uses: actions/setup-node@master   # Setup Node
+      - uses: c-hive/gha-yarn-cache@v1    # Uses Yarn Cache
 
       # Install node modules
       run: |
