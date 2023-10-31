@@ -25,6 +25,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "286b715d-3177-4a33-a537-622a583926cb"
+      }
+    },
+    "owner": "dep-fitness"
   }
 }
