@@ -14,8 +14,10 @@ jobs:
       - name: Checkout 
         uses: actions/checkout@v2
 
-      - name: Setup Node and Yarn Cache
+      - name: Setup Node
         uses: actions/setup-node@master
+
+      - name: Setup Yarn Cache
         uses: c-hive/gha-yarn-cache@v1
 
       - name: Install node modules
