@@ -34,12 +34,13 @@ jobs:
       - name: Build app
         run: |
           eas build --local \
-            --output=./app-build \
             --non-interactive \
-            --platform android 
+            --output=./app-build \
+            --platform=android \
+            --profile=development
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
         with:
           name: depfitness-build-android
-          path: app-build.apk
+          path: app-build
