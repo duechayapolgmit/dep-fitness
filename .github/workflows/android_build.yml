@@ -27,11 +27,18 @@ jobs:
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
-      - name: Setup EAS Local Builds
+      - name: Install dependencies
         run: npm install
 
       - name: Build app
-        run: eas build --local --non-interactive --platform android 
+        run: |
+          eas build --local \
+            --output=./app-build \
+            --non-interactive \
+            --platform android 
 
       - name: Upload Artifact
         uses: actions/upload-artifact@v2
+        with:
+          name: depfitness-build-android
+          path: app-build
