@@ -2,7 +2,7 @@ name: Android Build
 
 on:
   push:
-    branches: ["dev"]
+    branches: ["dev", "depf-*"]
   release:
     types: [published]
 
