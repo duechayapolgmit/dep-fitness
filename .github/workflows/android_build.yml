@@ -11,8 +11,15 @@ jobs:
     name: Android Build
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout 
-        uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Install Java
+        uses: actions/setup-java@v2
+        with:
+          java-version: "11"
+          distribution: "adopt"
+          cache: "gradle"
 
       - name: Setup Node
         uses: actions/setup-node@master
@@ -25,13 +32,13 @@ jobs:
         run: npm install
 
       - name: Cache Gradle Wrapper
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.gradle/wrapper
           key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
 
       - name: Cache Gradle Dependencies
-        uses: actions/cache@v2
+        uses: actions/cache@v3
         with:
           path: ~/.gradle/caches
           key: ${{ runner.os }}-gradle-caches-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
