@@ -14,3 +14,8 @@ This application also requires the following programs to run:
 
 ## Local Testing
 To test out the code locally, do `npm start` or preferrably, `npm android` for Android builds
+
+## Downloading Builds
+When a commit is pushed, an Android Build will start automatically via the Actions tab, after which you can get the artifact produced. 
+
+To use that artifact, rename the unformatted file in the zip file (in this case, `app-build`) to `app-build.apk`. Then, drag and drop the .apk file to the emulator or transfer it to your device. This is currently the temporarily solution for getting builds from GitHub Actions.
