@@ -24,6 +24,7 @@ jobs:
       - name: Setup EAS
         uses: expo/expo-github-action@v8
         with:
+          expo-version: latest
           eas-version: latest
           token: ${{ secrets.EXPO_TOKEN }}
 
@@ -33,11 +34,12 @@ jobs:
       - name: Build app
         run: |
           eas build --local \
-            --output= ./app-build/depfitness-build-android.apk \
+            --output= ./app-build \
             --non-interactive \
             --platform android 
 
       - name: Upload Artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v2
         with:
+          name: depfitness-build-android
           path: ./app-build
