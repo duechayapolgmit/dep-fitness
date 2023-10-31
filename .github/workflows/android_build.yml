@@ -20,21 +20,21 @@ jobs:
       name: Setup Yarn Cache
       - uses: c-hive/gha-yarn-cache@v1
 
-      # Install node modules
-      run: |
+      name: Install node modules
+      - run: |
         yarn install
 
-      # Runs Testing
-      run: |
+      name: Runs testing
+      - run: |
         yarn test-ci
 
-      # Cache Gradle Wrapper
-      uses: actions/cache@v2
+      name: Cache Gradle Wrapper
+      - uses: actions/cache@v2
       with:
         path: ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
 
-      # Cache Gradle Dependencies
+      name: Cache Gradle Dependencies
       uses: actions/cache@v2
       with:
         path: ~/.gradle/caches
@@ -42,16 +42,16 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-caches-
 
-      # Make Gradlew Executable
+      name: Make Gradlew Executable
       run: cd android && chmod +x ./gradlew
 
-      # Build Android App Bundle
+      name: Build Android App Bundle
       run: |
         cd android && ./gradlew bundleRelease --no-daemon
 
     # TO ADD - ANDROID SIGN EDIT
 
-      # Upload Artifact
+      name: Upload Artifact
       uses: actions/upload-artifact@v2
 
      # TO ADD - ANDROID SIGN EDIT
