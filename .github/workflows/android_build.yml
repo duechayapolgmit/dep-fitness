@@ -12,27 +12,27 @@ jobs:
     runs-on: ubuntu-latest
   
   steps:
-    - name: Checkout
-      uses: actions/checkout@v2
+      # Checkout Repository
+    - uses: actions/checkout@v2 
 
     - uses: actions/setup-node@master
     - uses: c-hive/gha-yarn-cache@v1
 
-    - name: Install node modules
+      # Install node modules
       run: |
         yarn install
 
-    - name: Run test
+      # Runs Testing
       run: |
         yarn test-ci
 
-    - name: Cache Gradle Wrapper
+      # Cache Gradle Wrapper
       uses: actions/cache@v2
       with:
         path: ~/.gradle/wrapper
         key: ${{ runner.os }}-gradle-wrapper-${{ hashFiles('gradle/wrapper/gradle-wrapper.properties') }}
 
-    - name: Cache Gradle Dependencies
+      # Cache Gradle Dependencies
       uses: actions/cache@v2
       with:
         path: ~/.gradle/caches
@@ -40,16 +40,16 @@ jobs:
         restore-keys: |
           ${{ runner.os }}-gradle-caches-
 
-    - name: Make Gradlew Executable
+      # Make Gradlew Executable
       run: cd android && chmod +x ./gradlew
 
-    - name: Build Android App Bundle
+      # Build Android App Bundle
       run: |
         cd android && ./gradlew bundleRelease --no-daemon
 
     # TO ADD - ANDROID SIGN EDIT
 
-    - name: Upload Artifact
+      # Upload Artifact
       uses: actions/upload-artifact@v2
 
      # TO ADD - ANDROID SIGN EDIT
