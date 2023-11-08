@@ -44,6 +44,7 @@ jobs:
   
   make_release:
     name: Create Release
+    needs: android_build
     runs-on: ubuntu-latest
     steps:
       - name: Checkout code
