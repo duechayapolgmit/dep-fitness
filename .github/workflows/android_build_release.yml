@@ -1,0 +1,81 @@
+name: Android Release Build
+
+on:
+  push:
+    tags:
+      - 'v*'
+
+jobs:
+  android_build:
+    name: Android Build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@master
+        with:
+          node-version: 20.x
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build app
+        run: |
+          eas build --local --non-interactive \
+          --platform android --profile dev \
+          --output=./app-build \
+            
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: depfitness-build-android
+          path: ./app-build
+  
+  make_release:
+    name: Create Release
+    runs_on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Download artifact
+        id: download-artifact
+        uses: dawidd66/action-download-artifact@v2
+
+      - name: Create Release
+        id: create_release
+        uses: actions/create-release@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+          body: |
+            Additions and Changes for this Release:
+            - DEPF-1: GitHub Actions implementation of building Android builds
+            - DEPF-4: GitHub Actions implementation of making releases
+            - DEPF-6: Basic Home Page Created
+            - DEPF-7: Implemented Connection to Firebase
+          draft: false
+          prerelease: false
+      
+      - name: Upload Release Asset
+        uses: actions/upload-release-asset@v1
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          asset_path: ./depfitness-build-android.zip
+          asset_name: depfitness-build-android-v${{ github.ref }}.zip
+          asset_content_type: application/zip
