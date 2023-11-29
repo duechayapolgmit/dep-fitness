@@ -35,12 +35,15 @@ jobs:
           eas build --local --non-interactive \
           --platform android --profile dev \
           --output=./app-build \
+
+      - name: Rename file
+        run: mv ./app-build app-build.apk
             
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: depfitness-build-android
-          path: ./app-build
+          path: ./app-build.apk
   
   make_release:
     name: Create Release
@@ -52,10 +55,17 @@ jobs:
 
       - name: Download artifact
         id: download-artifact
-        uses: dawidd6/action-download-artifact@v2
+        uses: actions/download-artifact@v3
+        with:
+          name: depfitness-build-android
+
+      - name: Archive content
+        uses: thedoctor0/zip-release@master
+        with:
+          filename: depfitness-build-android.zip
 
       - name: Create Release
-        id: create_release
+        id: create-release
         uses: actions/create-release@v1
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
@@ -64,10 +74,7 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: |
             Additions and Changes for this Release:
-            - DEPF-1: GitHub Actions implementation of building Android builds
-            - DEPF-4: GitHub Actions implementation of making releases
-            - DEPF-6: Basic Home Page Created
-            - DEPF-7: Implemented Connection to Firebase
+            - TBA
           draft: false
           prerelease: false
       

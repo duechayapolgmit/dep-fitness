@@ -2,7 +2,7 @@ name: Android Build
 
 on:
   push:
-    branches: ["dev", "depf-*"]
+    branches: ["dev", "staging", "depf-*", "DEPF-*"]
 
 jobs:
   android_build:
@@ -35,8 +35,11 @@ jobs:
           --platform android --profile dev \
           --output=./app-build \
             
+      - name: Rename file
+        run: mv ./app-build app-build.apk
+              
       - name: Upload Artifact
         uses: actions/upload-artifact@v3
         with:
           name: depfitness-build-android
-          path: ./app-build
+          path: ./app-build.apk
