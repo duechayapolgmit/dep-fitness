@@ -3,6 +3,7 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
+const env = "dev"; // CHANGE THIS TO prod IF YOU WANT TO MERGE TO MAIN BRANCH
 
 // Your web app's Firebase configuration
 const firebaseConfigDev = {
@@ -25,16 +26,10 @@ const firebaseConfigProd = {
     measurementId: "G-ZTH9R1BDNZ"
 }
 
-// Get Git branch and use firebase app based on branch
-const { exec } = require('child_process');
+// Use firebase app based on branch
 let firebaseApp;
-exec('git rev-parse --abbrev-ref HEAD', (err, stdout, stderr) => {
-    if (typeof stdout === 'string' && (stdout.trim() === 'main')) {
-        firebaseApp = firebase.initializeApp(firebaseConfigProd);
-    } else {
-        firebaseApp = firebase.initializeApp(firebaseConfigDev);
-    }
-});
+if (env == "prod") firebaseApp = firebase.initializeApp(firebaseConfigProd);
+else firebaseApp = firebase.initializeApp(firebaseConfigDev);
 
 const db = firebaseApp.firestore();
 
