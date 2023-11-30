@@ -3,19 +3,27 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import BrowsePage from './BrowsePage';
+import ProfilePage from "./ProfilePage";
+import AddPage from "./AddPage";
+import HistoryPage from "./HistoryPage";
 
 
 const Tab = createBottomTabNavigator();
 
-const ProfileScreen = () => {
+// const ProfileScreen = () => {
     
 
-    return (
-        <View style={styles.container}>
-            <Text>Email: {auth.currentUser?.email}</Text>
-        </View>
-    );
-};
+//     return (
+//         <View style={styles.container}>
+//             <Text>Email: {auth.currentUser?.email}</Text>
+//         </View>
+//     );
+// };
+
+
+
+
 
 const SettingsScreen = () => {
     const navigation = useNavigation();
@@ -47,12 +55,19 @@ const SettingsScreen = () => {
 };
 
 const HomePage = () => {
+
+    const isUserLoggedIn = !!auth.currentUser;
     return (
+        
         <Tab.Navigator>
-            <Tab.Screen name="Profile" component={ProfileScreen} />
-            {/* <Tab.Screen name="History" component={HistoryScreen} />
-            <Tab.Screen name="Add" component={AddScreen} />
-            <Tab.Screen name="Browser" component={BrowserScreen} /> */}
+            <Tab.Screen name="Profile" component={ProfilePage} />
+            {isUserLoggedIn && (
+                <>
+                    <Tab.Screen name="History" component={HistoryPage} />
+                    <Tab.Screen name="Add" component={AddPage} />
+                    <Tab.Screen name="Browse" component={BrowsePage} />
+                </>
+            )}
             <Tab.Screen name="Settings" component={SettingsScreen} />
         </Tab.Navigator>
     );
