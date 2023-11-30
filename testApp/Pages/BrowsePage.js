@@ -14,7 +14,7 @@ const BrowsePage = () => {
         <View style={styles.container}>
             <TextInput
                 style={styles.input}
-                placeholder="Enter your search query"
+                placeholder="Search for Workout"
                 value={searchQuery}
                 onChangeText={(text) => setSearchQuery(text)}
             />

@@ -4,19 +4,20 @@ import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import BrowsePage from './BrowsePage';
+import ProfilePage from "./ProfilePage";
 
 
 const Tab = createBottomTabNavigator();
 
-const ProfileScreen = () => {
+// const ProfileScreen = () => {
     
 
-    return (
-        <View style={styles.container}>
-            <Text>Email: {auth.currentUser?.email}</Text>
-        </View>
-    );
-};
+//     return (
+//         <View style={styles.container}>
+//             <Text>Email: {auth.currentUser?.email}</Text>
+//         </View>
+//     );
+// };
 
 const HistoryScreen = () => {
     
@@ -75,7 +76,7 @@ const HomePage = () => {
     return (
         
         <Tab.Navigator>
-            <Tab.Screen name="Profile" component={ProfileScreen} />
+            <Tab.Screen name="Profile" component={ProfilePage} />
             {isUserLoggedIn && (
                 <>
                     <Tab.Screen name="History" component={HistoryScreen} />
