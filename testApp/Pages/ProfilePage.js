@@ -6,6 +6,7 @@ import { auth } from '../firebase';
 const ProfilePage = () => {
     const [progress, setProgress] = useState(0);
     const [counter, setCounter] = useState(0);
+    const [loggedIn, setLoggedIn] = useState(!!auth.currentUser);
 
     useEffect(() => {
         const progressInterval = setInterval(() => {
@@ -20,19 +21,26 @@ const ProfilePage = () => {
             setCounter((prevCounter) => prevCounter + 1);
         }, 1000);
 
+        const authListener = auth.onAuthStateChanged((user) => {
+            setLoggedIn(!!user);
+        });
+
         return () => {
             clearInterval(progressInterval);
             clearInterval(counterInterval);
+            authListener(); // Unsubscribe from the auth state listener
         };
     }, []);
 
     return (
         <View style={styles.container}>
-            <Text style={styles.emailText}>Email: {auth.currentUser?.email}</Text>
-
-            <Progress.Bar progress={progress} width={200}/>
-
-            <Text style={styles.counterText}>Counter: {counter}</Text>
+            {loggedIn && (
+                <>
+                    <Text style={styles.emailText}>Email: {auth.currentUser?.email}</Text>
+                    <Progress.Bar progress={progress} width={200} />
+                    <Text style={styles.counterText}>Counter: {counter}</Text>
+                </>
+            )}
         </View>
     );
 };
