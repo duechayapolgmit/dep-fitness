@@ -3,6 +3,7 @@ import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import BrowsePage from './BrowsePage';
 
 
 const Tab = createBottomTabNavigator();
@@ -37,15 +38,7 @@ const AddScreen = () => {
     );
 };
 
-const BrowseScreen = () => {
-    
 
-    return (
-        <View style={styles.container}>
-            <Text>Email: {auth.currentUser?.email}</Text>
-        </View>
-    );
-};
 
 const SettingsScreen = () => {
     const navigation = useNavigation();
@@ -87,7 +80,7 @@ const HomePage = () => {
                 <>
                     <Tab.Screen name="History" component={HistoryScreen} />
                     <Tab.Screen name="Add" component={AddScreen} />
-                    <Tab.Screen name="Browse" component={BrowseScreen} />
+                    <Tab.Screen name="Browse" component={BrowsePage} />
                 </>
             )}
             <Tab.Screen name="Settings" component={SettingsScreen} />
