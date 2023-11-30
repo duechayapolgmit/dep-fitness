@@ -3,9 +3,10 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
+const env = "dev"; // CHANGE THIS TO prod IF YOU WANT TO MERGE TO MAIN BRANCH
 
 // Your web app's Firebase configuration
-const firebaseConfig = {
+const firebaseConfigDev = {
     apiKey: "AIzaSyBsxO6b9xJDcv0fRYL8DXPGRAjD6Xb87m8",
     authDomain: "depfit-311ae.firebaseapp.com",
     projectId: "depfit-311ae",
@@ -15,12 +16,24 @@ const firebaseConfig = {
     measurementId: "G-NQ17D55NWM"
 };
 
+const firebaseConfigProd = {
+    apiKey: "AIzaSyBRePvnfs64zmiaKTdqxXL7i1gGmSc0GgQ",
+    authDomain: "depfit-production.firebaseapp.com",
+    projectId: "depfit-production",
+    storageBucket: "depfit-production.appspot.com",
+    messagingSenderId: "1027764719317",
+    appId: "1:1027764719317:web:8504e4241068898d3cdc5c",
+    measurementId: "G-ZTH9R1BDNZ"
+}
 
-// Use this to initialize the firebase App
-const firebaseApp = firebase.initializeApp(firebaseConfig);
+// Use firebase app based on branch
+let firebaseApp;
+if (env == "prod") firebaseApp = firebase.initializeApp(firebaseConfigProd);
+else firebaseApp = firebase.initializeApp(firebaseConfigDev);
 
-// Use these for db & auth
 const db = firebaseApp.firestore();
+
+// Services
 const auth = firebase.auth();
 
 export { auth, db };
