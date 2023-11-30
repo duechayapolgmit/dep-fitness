@@ -17,6 +17,36 @@ const ProfileScreen = () => {
     );
 };
 
+const HistoryScreen = () => {
+    
+
+    return (
+        <View style={styles.container}>
+            <Text>Email: {auth.currentUser?.email}</Text>
+        </View>
+    );
+};
+
+const AddScreen = () => {
+    
+
+    return (
+        <View style={styles.container}>
+            <Text>Email: {auth.currentUser?.email}</Text>
+        </View>
+    );
+};
+
+const BrowseScreen = () => {
+    
+
+    return (
+        <View style={styles.container}>
+            <Text>Email: {auth.currentUser?.email}</Text>
+        </View>
+    );
+};
+
 const SettingsScreen = () => {
     const navigation = useNavigation();
 
@@ -47,12 +77,19 @@ const SettingsScreen = () => {
 };
 
 const HomePage = () => {
+
+    const isUserLoggedIn = !!auth.currentUser;
     return (
+        
         <Tab.Navigator>
             <Tab.Screen name="Profile" component={ProfileScreen} />
-            {/* <Tab.Screen name="History" component={HistoryScreen} />
-            <Tab.Screen name="Add" component={AddScreen} />
-            <Tab.Screen name="Browser" component={BrowserScreen} /> */}
+            {isUserLoggedIn && (
+                <>
+                    <Tab.Screen name="History" component={HistoryScreen} />
+                    <Tab.Screen name="Add" component={AddScreen} />
+                    <Tab.Screen name="Browse" component={BrowseScreen} />
+                </>
+            )}
             <Tab.Screen name="Settings" component={SettingsScreen} />
         </Tab.Navigator>
     );
