@@ -3,34 +3,19 @@ import firebase from 'firebase/compat/app';
 import 'firebase/compat/auth';
 import 'firebase/compat/firestore';
 
-const env = "dev"; // CHANGE THIS TO prod IF YOU WANT TO MERGE TO MAIN BRANCH
-
 // Your web app's Firebase configuration
-const firebaseConfigDev = {
-    apiKey: "AIzaSyBsxO6b9xJDcv0fRYL8DXPGRAjD6Xb87m8",
-    authDomain: "depfit-311ae.firebaseapp.com",
-    projectId: "depfit-311ae",
-    storageBucket: "depfit-311ae.appspot.com",
-    messagingSenderId: "938565214214",
-    appId: "1:938565214214:web:4eb97e8e3483a865882387",
-    measurementId: "G-NQ17D55NWM"
+const firebaseConfig = {
+    apiKey: `${process.env.FIREBASE_API_KEY}`,
+    authDomain: `${process.env.FIREBASE_PROJECT_ID}.firebaseapp.com`,
+    projectId: `${process.env.FIREBASE_PROJECT_ID}`,
+    storageBucket: `${process.env.FIREBASE_PROJECT_ID}.appspot.com`,
+    messagingSenderId: `${process.env.FIREBASE_SENDER_ID}`,
+    appId: `${process.env.FIREBASE_APP_ID}`,
+    measurementId: `${process.env.MEASUREMENT_ID}`
 };
 
-const firebaseConfigProd = {
-    apiKey: "AIzaSyBRePvnfs64zmiaKTdqxXL7i1gGmSc0GgQ",
-    authDomain: "depfit-production.firebaseapp.com",
-    projectId: "depfit-production",
-    storageBucket: "depfit-production.appspot.com",
-    messagingSenderId: "1027764719317",
-    appId: "1:1027764719317:web:8504e4241068898d3cdc5c",
-    measurementId: "G-ZTH9R1BDNZ"
-}
-
-// Use firebase app based on branch
-let firebaseApp;
-if (env == "prod") firebaseApp = firebase.initializeApp(firebaseConfigProd);
-else firebaseApp = firebase.initializeApp(firebaseConfigDev);
-
+// Use firebase app
+const firebaseApp = firebase.initializeApp(firebaseConfig);
 const db = firebaseApp.firestore();
 
 // Services

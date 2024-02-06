@@ -30,7 +30,8 @@
     "react-native-web": "^0.19.9"
   },
   "devDependencies": {
-    "@babel/core": "^7.20.0"
+    "@babel/core": "^7.20.0",
+    "dotenv": "^16.4.1"
   },
   "private": true
 }
