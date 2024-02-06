@@ -2,11 +2,12 @@ name: Android Build
 
 on:
   push:
-    branches: ["dev", "staging", "depf-*", "DEPF-*"]
+    branches: ["dev", "depf-*", "DEPF-*"]
 
 jobs:
   android_build:
     name: Android Build
+    environment: development
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
