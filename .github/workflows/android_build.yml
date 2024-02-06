@@ -29,6 +29,15 @@ jobs:
       - name: Install dependencies
         run: npm install
 
+      - name: Create env file
+        run: |
+          touch .env
+          echo FIREBASE_API_KEY="${{ secrets.FIREBASE_API_KEY }}"" > .env
+          echo FIREBASE_APP_ID="${{ env.FIREBASE_APP_ID }}"" > .env
+          echo FIREBASE_MEASUREMENT_ID="${{ env.FIREBASE_MEASUREMENT_ID }}"" > .env
+          echo FIREBASE_PROJECT_ID="${{ env.PROJECT_ID }}"" > .env
+          echo FIREBASE_SENDER_ID="${{ env.FIREBASE_SENDER_ID }}"" > .env
+
       - name: Build app
         run: |
           eas build --local --non-interactive \
