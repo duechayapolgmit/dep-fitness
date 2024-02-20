@@ -32,8 +32,15 @@ const SettingsScreen = () => {
         navigation.navigate('Login'); 
     }
 
+    const goToBMI = () => {
+        navigation.navigate('BMI');
+    }
+
     return (
         <View style={styles.container}>
+            <TouchableOpacity style={styles.button} onPress={goToBMI}>
+                <Text style={styles.buttonText}>BMI Calculator</Text>
+            </TouchableOpacity>
             <TouchableOpacity style={styles.button} onPress={goToLogin}>
                 <Text style={styles.buttonText}>Login/Register</Text>
             </TouchableOpacity>
