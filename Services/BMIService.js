@@ -4,6 +4,7 @@ export const getBMI = (height, weight) => {
 }
 export const getBMICategory = (bmi) => {
     if (isNaN(bmi)) return 'Unknown';
+    console.log(bmi)
 
     if (bmi < 18.5) return 'Underweight'
     else if (bmi >= 18.5 && bmi <= 24.9) return 'Healthy'

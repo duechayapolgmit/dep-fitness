@@ -7,24 +7,24 @@ const BMIPage = (props) => {
     const [height, setHeight] = React.useState();
     const [weight, setWeight] = React.useState();
 
-    const navigation = useNavigation();
-
     const [bmi, setBMI] = React.useState(-1);
     const [category, setCategory] = React.useState("Unknown");
 
     const calculateBMI = () => {
-        setBMI(getBMI(height, weight));
-        setCategory(getBMICategory(bmi));
+        let tempBMI = getBMI(height, weight)
+        setBMI(tempBMI);
+        setCategory(getBMICategory(tempBMI));
     }
 
     return (
-        <View>
+        <View accessible={true}>
             <TextInput
                 style={styles.input}
                 onChangeText={text => setHeight(text)}
                 value={height}
                 placeholder="Height (metres)"
                 keyboardType="numeric"
+                accessibilityLabel="height input"
             />
             <TextInput
                 style={styles.input}
@@ -32,12 +32,13 @@ const BMIPage = (props) => {
                 value={weight}
                 placeholder="Weight (kilograms)"
                 keyboardType="numeric"
+                accessibilityLabel="weight input"
             />
             <TouchableOpacity style={styles.button} onPress={calculateBMI}>
                 <Text style={styles.buttonText}>Calculate BMI</Text>
             </TouchableOpacity>
-            <Text>Your BMI: {bmi.toFixed(1)}</Text>
-            <Text>Category: {category}</Text>
+            <Text accessibilityLabel="bmi output">Your BMI: {bmi.toFixed(1)}</Text>
+            <Text accessibilityLabel="category output">Category: {category}</Text>
         </View>
     )
 };
