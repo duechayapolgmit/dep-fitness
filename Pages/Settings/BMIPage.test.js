@@ -18,8 +18,7 @@ test('healthy BMI - weight: 70kg, height: 175cm, BMI: 22.9', () => {
     const heightInput = getByLabelText("height input");
     const weightInput = getByLabelText("weight input");
 
-    const bmiOutput = getByLabelText("bmi output");
-    const categoryOutput = getByLabelText("category output");
+    const bmiInfoOutput = getByLabelText("bmi info");
 
     // Events
     fireEvent.changeText(heightInput, 1.75);
@@ -27,6 +26,69 @@ test('healthy BMI - weight: 70kg, height: 175cm, BMI: 22.9', () => {
     fireEvent.press(getByText('Calculate BMI'));
 
     // Checks
-    expect(bmiOutput.children).toStrictEqual(["Your BMI: ", "22.9"]);
-    expect(categoryOutput.children).toStrictEqual(["Category: ", "Healthy"]);
+    expect(bmiInfoOutput.children[0].props).toStrictEqual({"bmi": "22.9", "category": "Healthy"});
+})
+
+test('underweight BMI - weight: 55kg, height: 175cm, BMI: 18.0', () => {
+    const testCases = ['t1'];
+    const mockFn = jest.fn();
+
+    // Get elements via labels
+    const { getByLabelText, getByText } = render(<BMIPage/>);
+
+    const heightInput = getByLabelText("height input");
+    const weightInput = getByLabelText("weight input");
+
+    const bmiInfoOutput = getByLabelText("bmi info");
+
+    // Events
+    fireEvent.changeText(heightInput, 1.75);
+    fireEvent.changeText(weightInput, 55);
+    fireEvent.press(getByText('Calculate BMI'));
+
+    // Checks
+    expect(bmiInfoOutput.children[0].props).toStrictEqual({"bmi": "18.0", "category": "Underweight"});
+})
+
+test('overweight BMI - weight: 85kg, height: 175cm, BMI: 27.8', () => {
+    const testCases = ['t1'];
+    const mockFn = jest.fn();
+
+    // Get elements via labels
+    const { getByLabelText, getByText } = render(<BMIPage/>);
+
+    const heightInput = getByLabelText("height input");
+    const weightInput = getByLabelText("weight input");
+
+    const bmiInfoOutput = getByLabelText("bmi info");
+
+    // Events
+    fireEvent.changeText(heightInput, 1.75);
+    fireEvent.changeText(weightInput, 85);
+    fireEvent.press(getByText('Calculate BMI'));
+
+    // Checks
+    expect(bmiInfoOutput.children[0].props).toStrictEqual({"bmi": "27.8", "category": "Overweight"});
+})
+
+test('obese BMI - weight: 100kg, height: 175cm, BMI: 32.6', () => {
+    const testCases = ['t1'];
+    const mockFn = jest.fn();
+
+    // Get elements via labels
+    const { getByLabelText, getByText} = render(<BMIPage/>);
+
+    const heightInput = getByLabelText("height input");
+    const weightInput = getByLabelText("weight input");
+
+    const bmiInfoOutput = getByLabelText("bmi info");
+
+    // Events
+    fireEvent.changeText(heightInput, 1.75);
+    fireEvent.changeText(weightInput, 100);
+    fireEvent.press(getByText('Calculate BMI'));
+
+    // Checks
+    expect(bmiInfoOutput.children[0].props).toStrictEqual({"bmi": "32.7", "category": "Obese"});
+
 })

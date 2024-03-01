@@ -37,11 +37,29 @@ const BMIPage = (props) => {
             <TouchableOpacity style={styles.button} onPress={calculateBMI}>
                 <Text style={styles.buttonText}>Calculate BMI</Text>
             </TouchableOpacity>
-            <Text accessibilityLabel="bmi output">Your BMI: {bmi.toFixed(1)}</Text>
-            <Text accessibilityLabel="category output">Category: {category}</Text>
+            <View accessibilityLabel="bmi info">
+                <BMIInfo bmi={bmi.toFixed(1)} category={category} />
+            </View>
+            
         </View>
     )
 };
+
+const BMIInfo = (props) => {
+    const {bmi, category} = props;
+
+    if (bmi != -1){
+        return (
+            <View>
+                <Text accessibilityLabel="bmi output">Your BMI: {bmi}</Text>
+                <Text accessibilityLabel="category output">Category: {category}</Text>
+            </View>
+        )
+    } else {
+        return;
+    }
+    
+}
 
 const styles = StyleSheet.create({
     container: {
