@@ -92,3 +92,68 @@ test('obese BMI - weight: 100kg, height: 175cm, BMI: 32.6', () => {
     expect(bmiInfoOutput.children[0].props).toStrictEqual({"bmi": "32.7", "category": "Obese"});
 
 })
+
+
+
+test('display error for incorrect weight - weight: abc, height: 170cm', () => {
+    const testCases = ['t1'];
+    const mockFn = jest.fn();
+
+    // Get elements via labels
+    const { getByLabelText, getByText} = render(<BMIPage/>);
+
+    const heightInput = getByLabelText("height input");
+    const weightInput = getByLabelText("weight input");
+
+    const bmiInfoOutput = getByLabelText("bmi info");
+
+    // Events
+    fireEvent.changeText(heightInput, 1.70);
+    fireEvent.changeText(weightInput, "abc");
+    fireEvent.press(getByText('Calculate BMI'));
+
+    // Checks
+    expect(bmiInfoOutput.children[0].props.children).toStrictEqual("ERROR: Invalid input! Please enter only numerical values in the fields.");
+})
+
+test('display error for incorrect height - weight: 59kg, height: def', () => {
+    const testCases = ['t1'];
+    const mockFn = jest.fn();
+
+    // Get elements via labels
+    const { getByLabelText, getByText} = render(<BMIPage/>);
+
+    const heightInput = getByLabelText("height input");
+    const weightInput = getByLabelText("weight input");
+
+    const bmiInfoOutput = getByLabelText("bmi info");
+
+    // Events
+    fireEvent.changeText(heightInput, "def");
+    fireEvent.changeText(weightInput, 59);
+    fireEvent.press(getByText('Calculate BMI'));
+
+    // Checks
+    expect(bmiInfoOutput.children[0].props.children).toStrictEqual("ERROR: Invalid input! Please enter only numerical values in the fields.");
+})
+
+test('display error for incorrect fields - weight: abc, height: def', () => {
+    const testCases = ['t1'];
+    const mockFn = jest.fn();
+
+    // Get elements via labels
+    const { getByLabelText, getByText} = render(<BMIPage/>);
+
+    const heightInput = getByLabelText("height input");
+    const weightInput = getByLabelText("weight input");
+
+    const bmiInfoOutput = getByLabelText("bmi info");
+
+    // Events
+    fireEvent.changeText(heightInput, "def");
+    fireEvent.changeText(weightInput, "abc");
+    fireEvent.press(getByText('Calculate BMI'));
+
+    // Checks
+    expect(bmiInfoOutput.children[0].props.children).toStrictEqual("ERROR: Invalid input! Please enter only numerical values in the fields.");
+})

@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, TextInput, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { getBMI, getBMICategory } from "../../Services/BMIService";
 
@@ -10,14 +10,28 @@ const BMIPage = (props) => {
     const [bmi, setBMI] = React.useState(-1);
     const [category, setCategory] = React.useState("Unknown");
 
+    const [showAlert, setShowAlert] = React.useState(false);
+
+    const errorMessage = "ERROR: Invalid input! Please enter only numerical values in the fields.";
+
     const calculateBMI = () => {
+        setShowAlert(false);
         let tempBMI = getBMI(height, weight)
+
+        if (tempBMI == -1) {
+            setShowAlert(true);
+        }
         setBMI(tempBMI);
         setCategory(getBMICategory(tempBMI));
     }
 
+    const alerter = () => {
+        return (Alert.alert("yo"));
+    }
+
     return (
         <View accessible={true}>
+            
             <TextInput
                 style={styles.input}
                 onChangeText={text => setHeight(text)}
@@ -38,6 +52,10 @@ const BMIPage = (props) => {
                 <Text style={styles.buttonText}>Calculate BMI</Text>
             </TouchableOpacity>
             <View accessibilityLabel="bmi info">
+                {
+                    showAlert && 
+                    <Text accessibilityLabel="error msg">{errorMessage}</Text>
+                }
                 <BMIInfo bmi={bmi.toFixed(1)} category={category} />
             </View>
             
