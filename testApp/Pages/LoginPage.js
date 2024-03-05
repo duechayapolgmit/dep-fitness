@@ -21,13 +21,32 @@ const LoginPage = () => {
     }, [])
 
     const handleRegister = () => {
-        auth.createUserWithEmailAndPassword(email, password).then(userCredentials =>
-            {
+        // Password requirements
+        const minLength = 8;
+        const hasUpperCase = /[A-Z]/.test(password);
+        const hasLowerCase = /[a-z]/.test(password);
+        const hasNumbers = /\d/.test(password);
+        const hasSpecialChars = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+    
+        // Check if password meets requirements
+        if (
+            password.length < minLength ||
+            !hasUpperCase ||
+            !hasLowerCase ||
+            !hasNumbers ||
+            !hasSpecialChars
+        ) {
+            alert("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.");
+            return;
+        }
+    
+        // If password meets complexity requirements, proceed with registration
+        auth.createUserWithEmailAndPassword(email, password).then(userCredentials => {
             const user = userCredentials.user;
             console.log(user.email);
-            
-        }).catch(error => alert(error.message))
+        }).catch(error => alert(error.message));
     }
+    
 
     const handleLogin = () => { 
         auth.signInWithEmailAndPassword(email, password).then(userCredentials =>
