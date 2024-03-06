@@ -57,7 +57,17 @@ const LoginPage = () => {
     const handleLogin = () => { 
         // Check if login attempts have exceeded the maximum limit
         if (loginAttempts >= MAX_LOGIN_ATTEMPTS && Date.now() - lastLoginAttemptTime < LOGIN_TIMEOUT_DURATION) {
-            setLoginError('Too many login attempts. Please try again later.');
+            // Update error message each second
+            const intervalId = setInterval(() => {
+                const remainingTime = Math.ceil((lastLoginAttemptTime + LOGIN_TIMEOUT_DURATION - Date.now()) / 1000); // Convert milliseconds to seconds 
+                if (remainingTime <= 0) {
+                    // Clear interval when timeout is over
+                    clearInterval(intervalId);
+                    setLoginError('');
+                } else {
+                    setLoginError(`Too many login attempts. Please try again in ${remainingTime} seconds.`);
+                }
+            }, 1000);
             return;
         }
 
