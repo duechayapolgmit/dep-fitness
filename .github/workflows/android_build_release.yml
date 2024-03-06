@@ -83,7 +83,9 @@ jobs:
           release_name: Release ${{ github.ref }}
           body: |
             Additions and Changes for this Release:
-            - TBA
+            - DEPF-19 and DEPF-30: Environments changes. There are now 3 separate environments of where the application will be deployed in. These are noted in the environments section (note that edit access is required).\
+            - DEPF-35: Automated testing implementation, with an example of BMI calculator using this technique. Further automated testing can be done with more features.
+            - Various other fixes for DEPF-1 and DEPF-4
           draft: false
           prerelease: false
       
