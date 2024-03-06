@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet, View, TextInput, TouchableOpacity, Text } from "react-native";
+import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert } from "react-native";
 import { useNavigation } from "@react-navigation/core";
 import { getBMI, getBMICategory } from "../../Services/BMIService";
 
@@ -7,24 +7,38 @@ const BMIPage = (props) => {
     const [height, setHeight] = React.useState();
     const [weight, setWeight] = React.useState();
 
-    const navigation = useNavigation();
-
     const [bmi, setBMI] = React.useState(-1);
     const [category, setCategory] = React.useState("Unknown");
 
+    const [showAlert, setShowAlert] = React.useState(false);
+
+    const errorMessage = "ERROR: Invalid input! Please enter only numerical values in the fields.";
+
     const calculateBMI = () => {
-        setBMI(getBMI(height, weight));
-        setCategory(getBMICategory(bmi));
+        setShowAlert(false);
+        let tempBMI = getBMI(height, weight)
+
+        if (tempBMI == -1) {
+            setShowAlert(true);
+        }
+        setBMI(tempBMI);
+        setCategory(getBMICategory(tempBMI));
+    }
+
+    const alerter = () => {
+        return (Alert.alert("yo"));
     }
 
     return (
-        <View>
+        <View accessible={true}>
+            
             <TextInput
                 style={styles.input}
                 onChangeText={text => setHeight(text)}
                 value={height}
                 placeholder="Height (metres)"
                 keyboardType="numeric"
+                accessibilityLabel="height input"
             />
             <TextInput
                 style={styles.input}
@@ -32,15 +46,38 @@ const BMIPage = (props) => {
                 value={weight}
                 placeholder="Weight (kilograms)"
                 keyboardType="numeric"
+                accessibilityLabel="weight input"
             />
             <TouchableOpacity style={styles.button} onPress={calculateBMI}>
                 <Text style={styles.buttonText}>Calculate BMI</Text>
             </TouchableOpacity>
-            <Text>Your BMI: {bmi.toFixed(1)}</Text>
-            <Text>Category: {category}</Text>
+            <View accessibilityLabel="bmi info">
+                {
+                    showAlert && 
+                    <Text accessibilityLabel="error msg">{errorMessage}</Text>
+                }
+                <BMIInfo bmi={bmi.toFixed(1)} category={category} />
+            </View>
+            
         </View>
     )
 };
+
+const BMIInfo = (props) => {
+    const {bmi, category} = props;
+
+    if (bmi != -1){
+        return (
+            <View>
+                <Text accessibilityLabel="bmi output">Your BMI: {bmi}</Text>
+                <Text accessibilityLabel="category output">Category: {category}</Text>
+            </View>
+        )
+    } else {
+        return;
+    }
+    
+}
 
 const styles = StyleSheet.create({
     container: {

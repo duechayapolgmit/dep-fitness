@@ -39,6 +39,9 @@ jobs:
           echo FIREBASE_PROJECT_ID="${{ env.PROJECT_ID }}" > .env
           echo FIREBASE_SENDER_ID="${{ env.FIREBASE_SENDER_ID }}" > .env
 
+      - name: Run tests via Jest
+        run: npm test
+
       - name: Build app
         run: |
           eas build --local --non-interactive \
