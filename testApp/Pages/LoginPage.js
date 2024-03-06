@@ -3,10 +3,16 @@ import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/core";
 
+const MAX_LOGIN_ATTEMPTS = 3; // Max number of login attempts allowed
+const LOGIN_TIMEOUT_DURATION = 60 * 1000; // Timeout duration (1 minute)
+let loginAttempts = 0;
+let lastLoginAttemptTime = 0;
+
 
 const LoginPage = () => {
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
+    const [loginError, setLoginError] = useState('');
 
    const navigation = useNavigation()
 
@@ -49,14 +55,29 @@ const LoginPage = () => {
     
 
     const handleLogin = () => { 
-        auth.signInWithEmailAndPassword(email, password).then(userCredentials =>
-            {
-            const user = userCredentials.user;
-            console.log("Logged in with: ", user.email);
-            
-        }).catch(error => alert(error.message))
+        // Check if login attempts have exceeded the maximum limit
+        if (loginAttempts >= MAX_LOGIN_ATTEMPTS && Date.now() - lastLoginAttemptTime < LOGIN_TIMEOUT_DURATION) {
+            setLoginError('Too many login attempts. Please try again later.');
+            return;
+        }
 
-    }
+        // Attempt login
+        auth.signInWithEmailAndPassword(email, password)
+            .then(userCredentials => {
+                const user = userCredentials.user;
+                console.log("Logged in with: ", user.email);
+                // Reset login attempts if login is successful
+                loginAttempts = 0;
+                setLoginError('');
+                navigation.navigate("Home");
+            })
+            .catch(error => {
+                // Increment login attempts and update last login attempt time
+                loginAttempts++;
+                lastLoginAttemptTime = Date.now();
+                setLoginError(error.message);
+            });
+    };
 
     return(
         <KeyboardAvoidingView style={styles.container} behavior="padding">
@@ -73,6 +94,8 @@ const LoginPage = () => {
                 secureTextEntry></TextInput>
             </View>
 
+            {loginError ? <Text style={styles.errorText}>{loginError}</Text> : null}
+
             <View style={styles.buttonContainer}>
                 <TouchableOpacity onPress={handleLogin} style={[styles.button, styles.buttonOutline]}>
                     <Text style={styles.buttonOutlineText}>Login</Text>
@@ -86,10 +109,8 @@ const LoginPage = () => {
             </View>
 
         </KeyboardAvoidingView>
-
-            
-    )
-}
+    );
+};
 
 export default LoginPage
 
