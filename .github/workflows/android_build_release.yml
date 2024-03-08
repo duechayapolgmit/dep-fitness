@@ -79,7 +79,7 @@ jobs:
         id: create_release
         uses: DasBen/release-on-push-action@master
         with:
-          bump_version_scheme: patch
+          bump_version_scheme: patch      # Change when necessary
           tag_prefix: "v"
           use_github_release_notes: true
       
@@ -90,5 +90,5 @@ jobs:
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./depfitness-build-android.zip
-          asset_name: depfitness-build-android-v${{ github.ref }}.zip
+          asset_name: depfitness-build-android-${{ steps.create_release.outputs.version }}.zip
           asset_content_type: application/zip
