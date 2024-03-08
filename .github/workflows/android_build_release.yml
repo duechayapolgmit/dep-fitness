@@ -75,7 +75,8 @@ jobs:
         with:
           filename: depfitness-build-android.zip
       
-      - name: Auto-tagging
+      - name: Auto-tagging and create release
+        id: create_release
         uses: rymndhng/release-on-push-action@master
         with:
           bump_version_scheme: patch
@@ -87,7 +88,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          upload_url: ${{ steps.create-release.outputs.upload_url }}
+          upload_url: ${{ steps.create_release.outputs.upload_url }}
           asset_path: ./depfitness-build-android.zip
           asset_name: depfitness-build-android-v${{ github.ref }}.zip
           asset_content_type: application/zip
