@@ -77,7 +77,7 @@ jobs:
       
       - name: Auto-tagging and create release
         id: create_release
-        uses: rymndhng/release-on-push-action@master
+        uses: DasBen/release-on-push-action@master
         with:
           bump_version_scheme: patch
           tag_prefix: "v"
