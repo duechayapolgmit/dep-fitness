@@ -2,8 +2,8 @@ name: Android Release Build
 
 on:
   push:
-    tags:
-      - 'v*'
+    branches: 
+      - main
 
 jobs:
   android_build:
@@ -58,6 +58,8 @@ jobs:
     name: Create Release
     needs: android_build
     runs-on: ubuntu-latest
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
     steps:
       - name: Checkout code
         uses: actions/checkout@v2
@@ -72,20 +74,13 @@ jobs:
         uses: thedoctor0/zip-release@master
         with:
           filename: depfitness-build-android.zip
-
-      - name: Create Release
-        id: create-release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} 
+      
+      - name: Auto-tagging
+        uses: rymndhng/release-on-push-action@master
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          body: |
-            Additions and Changes for this Release:
-            - TBA
-          draft: false
-          prerelease: false
+          bump_version_scheme: patch
+          tag_prefix: "v"
+          use_github_release_notes: true
       
       - name: Upload Release Asset
         uses: actions/upload-release-asset@v1
