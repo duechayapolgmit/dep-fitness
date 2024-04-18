@@ -1,33 +1,54 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
 import * as Progress from 'react-native-progress';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
+import { collection, query, where, getDocs } from 'firebase/firestore';
 
 const ProfilePage = () => {
     const [progress, setProgress] = useState(0);
-    const [counter, setCounter] = useState(0);
-    const [loggedIn, setLoggedIn] = useState(!!auth.currentUser);
+    const [totalSquats, setTotalSquats] = useState(0);
+    const [totalJumpingJacks, setTotalJumpingJacks] = useState(0);
+    const [totalPushUps, setTotalPushUps] = useState(0);
+    const [totalPlanks, setTotalPlanks] = useState(0);
+    const [loggedIn, setLoggedIn] = useState(false);
 
     useEffect(() => {
         const progressInterval = setInterval(() => {
-            // Progress update
-            // Currently updates 0.1 every second for testing purposes
-            setProgress((prevProgress) => (prevProgress < 1 ? prevProgress + 0.1 : 0));
+            setProgress(prevProgress => prevProgress < 1 ? prevProgress + 0.1 : 1);
         }, 1000);
 
-        const counterInterval = setInterval(() => {
-            // Streak counter
-            // Currently updates every second(1000) for testing purposes
-            setCounter((prevCounter) => prevCounter + 1);
-        }, 1000);
+        const fetchWorkoutTotals = async (collectionName, setter, countField) => {
+            if (auth.currentUser) {
+                const userEmail = auth.currentUser.email.toLowerCase();
+                const ref = collection(db, collectionName);
+                const q = query(ref, where('userEmail', '==', userEmail));
 
-        const authListener = auth.onAuthStateChanged((user) => {
+                try {
+                    const querySnapshot = await getDocs(q);
+                    let total = 0;
+                    querySnapshot.forEach(doc => {
+                        total += doc.data()[countField] || 0;
+                    });
+                    setter(total);
+                    console.log(`Total ${collectionName}:`, total);
+                } catch (error) {
+                    console.error(`Error fetching ${collectionName}:`, error);
+                }
+            }
+        };
+
+        const authListener = auth.onAuthStateChanged(user => {
             setLoggedIn(!!user);
+            if (user) {
+                fetchWorkoutTotals('squatSessions', setTotalSquats, 'squatCount');
+                fetchWorkoutTotals('jumpingJackSessions', setTotalJumpingJacks, 'jumpingJackCount');
+                fetchWorkoutTotals('pushupSessions', setTotalPushUps, 'pushupCount');
+                fetchWorkoutTotals('plankSessions', setTotalPlanks, 'duration'); // Adjust if your 'plank' has a different count field
+            }
         });
 
         return () => {
             clearInterval(progressInterval);
-            clearInterval(counterInterval);
             authListener(); // Unsubscribe from the auth state listener
         };
     }, []);
@@ -38,7 +59,10 @@ const ProfilePage = () => {
                 <>
                     <Text style={styles.emailText}>Email: {auth.currentUser?.email}</Text>
                     <Progress.Bar progress={progress} width={200} />
-                    <Text style={styles.counterText}>Counter: {counter}</Text>
+                    <Text style={styles.totalSquatsText}>Total Squats: {totalSquats}</Text>
+                    <Text style={styles.totalText}>Total Jumping Jacks: {totalJumpingJacks}</Text>
+                    <Text style={styles.totalText}>Total Push Ups: {totalPushUps}</Text>
+                    <Text style={styles.totalText}>Total Planks: {totalPlanks}</Text>
                 </>
             )}
         </View>
@@ -56,16 +80,17 @@ const styles = StyleSheet.create({
     emailText: {
         fontSize: 18,
         fontWeight: 'bold',
-        marginBottom: 260,
+        marginBottom: 10,
     },
-    progressBar: {
-        width: '80%',
-        marginTop: 20,
-    },
-    counterText: {
+    totalSquatsText: {
         fontSize: 18,
         fontWeight: 'bold',
         marginTop: 20,
+    },
+    totalText: {
+        fontSize: 18,
+        fontWeight: 'bold',
+        marginTop: 10,
     },
 });
 
