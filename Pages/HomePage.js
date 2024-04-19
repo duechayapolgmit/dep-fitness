@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, Text, View, Image, Dimensions, ScrollView } from "react-native";
+import { StyleSheet, TouchableOpacity, Text, View, Image, ImageBackground, Dimensions, ScrollView } from "react-native";
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -39,7 +39,7 @@ const SettingsScreen = () => {
     const handleSignOut = () => {
         auth.signOut()
             .then(() => {
-                navigation.replace("Home");
+                navigation.replace("Login");
             })
             .catch((error) => alert(error.message));
     };
@@ -135,7 +135,7 @@ const HomePage = () => {
                     <Tab.Screen name="Browse" component={BrowsePage} />
                 </>
             )}
-            <Tab.Screen name="DEP-Fitness" component={SettingsScreen} />
+            <Tab.Screen name="Settings" component={SettingsScreen} />
         </Tab.Navigator>
     );
 };

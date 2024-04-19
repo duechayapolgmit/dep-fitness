@@ -62,7 +62,7 @@ const ProfilePage = () => {
                     <Text style={styles.totalSquatsText}>Total Squats: {totalSquats}</Text>
                     <Text style={styles.totalText}>Total Jumping Jacks: {totalJumpingJacks}</Text>
                     <Text style={styles.totalText}>Total Push Ups: {totalPushUps}</Text>
-                    <Text style={styles.totalText}>Total Planks: {totalPlanks}</Text>
+                    <Text style={styles.totalText}>Total seconds doing plank: {totalPlanks}</Text>
                 </>
             )}
         </View>

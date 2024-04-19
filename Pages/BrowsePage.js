@@ -132,13 +132,13 @@ const styles = StyleSheet.create({
     },
     suggestionsContainer: {
         flexDirection: 'row',
-        paddingVertical: 20,
+        paddingVertical: 30,
     },
     suggestionButton: {
         marginHorizontal: 12,
         backgroundColor: '#e0e0e0',
-        padding: 0,
-        borderRadius: 40,
+        padding: 10,
+        borderRadius: 5,
     },
     suggestionText: {
         fontSize: 15,

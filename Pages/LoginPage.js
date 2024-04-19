@@ -1,7 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View } from "react-native";
+import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, View, ImageBackground, Image } from "react-native";
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/core";
+import HomePageLogo from '../assets/HomePageLogo.png';
 
 const MAX_LOGIN_ATTEMPTS = 3; // Max number of login attempts allowed
 const LOGIN_TIMEOUT_DURATION = 60 * 1000; // Timeout duration (1 minute)
@@ -12,8 +13,11 @@ const LoginPage = () => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState('');
+    const [showLogin, setShowLogin] = useState(false);
+
 
     const navigation = useNavigation();
+
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
@@ -28,6 +32,10 @@ const LoginPage = () => {
 
         return unsubscribe;
     }, []);
+
+    const handleEnter = () => {
+        setShowLogin(true);  // Hide the initial view and show the login form
+    };
 
     const handleRegister = () => {
         // Password requirements
@@ -104,53 +112,99 @@ const LoginPage = () => {
     };
 
     return (
-        <KeyboardAvoidingView style={styles.container} behavior="padding">
-
-            <View style={styles.inputContainer}>
-                <TextInput
-                    placeholder="Email"
-                    value={email}
-                    onChangeText={text => setEmail(text)}
-                    style={styles.input}
-                />
-                <TextInput
-                    placeholder="Password"
-                    value={password}
-                    onChangeText={text => setPassword(text)}
-                    style={styles.input}
-                    secureTextEntry
-                />
-            </View>
-
-            {loginError ? <Text style={styles.errorText}>{loginError}</Text> : null}
-
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleLogin} style={[styles.button, styles.buttonOutline]}>
-                    <Text style={styles.buttonOutlineText}>Login</Text>
-                </TouchableOpacity>
-            </View>
-
-            <View style={styles.buttonContainer}>
-                <TouchableOpacity onPress={handleRegister} style={styles.button}>
-                    <Text style={styles.buttonOutline}>Register</Text>
-                </TouchableOpacity>
-            </View>
-
-        </KeyboardAvoidingView>
+        <ImageBackground
+            source={require('../assets/Background2.jpg')}
+            style={styles.backgroundImage}
+            resizeMode="cover"
+        >
+            <KeyboardAvoidingView style={styles.container} behavior="padding">
+                {!showLogin ? (
+                    <View style={styles.welcomeContainer}>
+                        <TouchableOpacity onPress={handleEnter} style={[styles.imageButton]}>
+                            <Image source={HomePageLogo} style={styles.logo} resizeMode="contain" />
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={handleEnter} style={styles.button}>
+                            <Text style={styles.buttonText}>Enter</Text>
+                        </TouchableOpacity>
+                    </View>
+                ) : (
+                    <View style={styles.inputContainer}>
+                        <TextInput
+                            placeholder="Email"
+                            value={email}
+                            onChangeText={setEmail}
+                            style={styles.input}
+                        />
+                        <TextInput
+                            placeholder="Password"
+                            value={password}
+                            onChangeText={setPassword}
+                            style={styles.input}
+                            secureTextEntry
+                        />
+                        {loginError ? <Text style={styles.errorText}>{loginError}</Text> : null}
+                        <View style={styles.buttonContainer}>
+                            <TouchableOpacity onPress={handleLogin} style={styles.button}>
+                                <Text style={styles.buttonText}>Login</Text>
+                            </TouchableOpacity>
+                            <TouchableOpacity onPress={handleRegister} style={styles.button}>
+                                <Text style={styles.buttonText}>Register</Text>
+                            </TouchableOpacity>
+                        </View>
+                    </View>
+                )}
+            </KeyboardAvoidingView>
+        </ImageBackground>
     );
 };
 
 export default LoginPage;
 
 const styles = StyleSheet.create({
+    backgroundImage: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+    logo: {
+        width: 200,  // Define a suitable size for the image
+        height: 200,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
     },
+    welcomeContainer: {
+        alignItems: 'center',
+        padding: 20,
+        borderRadius: 10,
+        width: 200,  // Define a suitable size for the image
+        height: 200,
+
+
+    },
+    imageButton: {
+        marginBottom: 20,  // Provides spacing between the image button and the text
+    },
+    welcomeText: {
+        fontSize: 24,
+        alignItems: 'center',
+        color: 'white',
+        marginBottom: 20,
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 3.84,
+        elevation: 5,
+    },
+    enterButton: {
+        backgroundColor: '#3498db',
+        padding: 10,
+        borderRadius: 5,
+    },
     inputContainer: {
         width: '80%',
-        marginBottom: 20,
     },
     input: {
         backgroundColor: '#f5f5f5',
@@ -160,6 +214,8 @@ const styles = StyleSheet.create({
     },
     buttonContainer: {
         width: '60%',
+        flexDirection: 'row',
+        justifyContent: 'space-around',
     },
     button: {
         backgroundColor: '#3498db',
@@ -168,17 +224,15 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         marginBottom: 15,
     },
-    buttonOutline: {
-        backgroundColor: 'transparent',
-        borderWidth: 2,
-        borderColor: '#3498db',
-    },
-    buttonOutlineText: {
-
-    },
     buttonText: {
         color: '#fff',
+        fontSize: 18, // Adjust the font size as needed
+        fontFamily: 'Arial', // Change the font family to your preferred font
+        textShadowColor: 'rgba(0, 0, 0, 0.75)', // Add a text shadow for better visibility
+        textShadowOffset: { width: 1, height: 1 },
+        textShadowRadius: 3,
     },
+
     errorText: {
         color: 'red',
         marginBottom: 10,

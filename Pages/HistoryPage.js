@@ -107,7 +107,7 @@ const HistoryPage = () => {
             </div>
         </div>
     );
-                        }
+}
 
 
-    export default HistoryPage;
+export default HistoryPage;
