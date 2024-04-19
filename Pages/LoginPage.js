@@ -3,6 +3,7 @@ import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/core";
 import HomePageLogo from '../assets/HomePageLogo.png';
+import '../App.css';
 
 const MAX_LOGIN_ATTEMPTS = 3; // Max number of login attempts allowed
 const LOGIN_TIMEOUT_DURATION = 60 * 1000; // Timeout duration (1 minute)
@@ -167,7 +168,7 @@ const styles = StyleSheet.create({
         height: '100%',
     },
     logo: {
-        width: 200,  // Define a suitable size for the image
+        width: 200,
         height: 200,
     },
     container: {
@@ -179,13 +180,13 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         padding: 20,
         borderRadius: 10,
-        width: 200,  // Define a suitable size for the image
+        width: 200,
         height: 200,
 
 
     },
     imageButton: {
-        marginBottom: 20,  // Provides spacing between the image button and the text
+        marginBottom: 20,
     },
     welcomeText: {
         fontSize: 24,

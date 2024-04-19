@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { db, auth } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { ImageBackground } from 'react-native';
+import '../App.css';
 
 const HistoryPage = () => {
     const [workouts, setWorkouts] = useState([]);
@@ -73,6 +75,11 @@ const HistoryPage = () => {
     }
 
     return (
+        <ImageBackground
+            source={require('../assets/BlackBackground.png')}
+            className = "backgroundImage"
+            resizeMode="cover"
+        >
         <div style={{ padding: '20px', height: '100vh', overflowY: 'auto' }}>
             <h1>Workout History</h1>
             <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center' }}>
@@ -106,6 +113,7 @@ const HistoryPage = () => {
                 ))}
             </div>
         </div>
+        </ImageBackground>
     );
 }
 

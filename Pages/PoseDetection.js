@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { ScrollView, View, Text, Image, TouchableOpacity, StyleSheet, Dimensions } from 'react-native';
+import { ScrollView, View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import SquatLogo from '../assets/Squat.png'; // Make sure to adjust your import paths
 import JumpingJack from '../assets/JumpingJack.png'; // Make sure to adjust your import paths
@@ -38,9 +38,14 @@ function PoseDetection() {
   };
 
   return (
+    <ImageBackground
+            source={require('../assets/BlackBackground.png')}
+            style={styles.backgroundImage}
+            resizeMode="cover"
+        >
     <View style={styles.container}>
       <View style={styles.header}>
-        <Text style={styles.title}>Exercises</Text>
+        <Text style={styles.title}>Choose your Exercise!</Text>
       </View>
       <ScrollView contentContainerStyle={styles.cardContainer}>
         <TouchableOpacity style={[styles.card, { width: cardWidth }]} onPress={navigateToSquatCounter}>
@@ -61,6 +66,7 @@ function PoseDetection() {
         </TouchableOpacity>
         </ScrollView>
     </View>
+    </ImageBackground>
   );
 }
 
@@ -69,14 +75,20 @@ const styles = StyleSheet.create({
     flex: 1,
 
   },
+  backgroundImage: {
+    flex: 1,
+    width: '100%',
+    height: '100%', // Ensure it covers the full height
+  },
+  
   header: {
     padding: 20,
-    backgroundColor: '#007AFF',
+    backgroundColor: 'black',
   },
   title: {
     fontWeight: 'bold',
     fontSize: 20,
-    color: 'white',
+    color: '#e0e0e0',
   },
   cardContainer: {
     flexDirection: 'row', // Align items in a row

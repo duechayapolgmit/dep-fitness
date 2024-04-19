@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { StyleSheet, TouchableOpacity, Text, View, Image, ImageBackground, Dimensions, ScrollView } from "react-native";
+import { StyleSheet, TouchableOpacity, Text, View, Image, ImageBackground, ScrollView } from "react-native";
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/native";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
@@ -7,10 +7,138 @@ import BrowsePage from './BrowsePage';
 import ProfilePage from "./ProfilePage";
 import PoseDetection from "./PoseDetection";
 import HistoryPage from "./HistoryPage";
-import HomePageLogo from '../assets/HomePageLogo.png';
+import Icon from 'react-native-vector-icons/FontAwesome';
 
 const Tab = createBottomTabNavigator();
-const screenHeight = Dimensions.get('window').height;
+
+const HomePage = () => {
+    const [isEmailVerified, setIsEmailVerified] = useState(false);
+    const [rerender, setRerender] = useState(false); // State to trigger re-render
+
+    useEffect(() => {
+        const unsubscribe = auth.onAuthStateChanged(user => {
+            if (user) {
+                setIsEmailVerified(user.emailVerified);
+                setRerender(prevState => !prevState); // Trigger re-render on auth state change
+            }
+        });
+
+        return unsubscribe;
+    }, []);
+
+    const isUserLoggedIn = !!auth.currentUser;
+    const navigation = useNavigation();
+
+    return (
+        <Tab.Navigator
+            screenOptions={({ route }) => ({
+                tabBarIcon: ({ focused, color, size }) => {
+                    let iconName;
+
+                    if (route.name === 'Profile') {
+                        iconName = 'user';
+                    } else if (route.name === 'History') {
+                        iconName = 'history';
+                    } else if (route.name === 'Scan') {
+                        iconName = 'camera';
+                    } else if (route.name === 'Browse') {
+                        iconName = 'search';
+                    } else if (route.name === 'Settings') {
+                        iconName = 'gear';
+                    }
+
+                    // You can return any component that you like here!
+                    return <Icon name={iconName} size={size} color={color} />;
+                },
+                tabBarActiveTintColor: '#3498db',
+                tabBarInactiveTintColor: 'gray',
+                tabBarLabelStyle: { fontSize: 12 },
+                tabBarStyle: { paddingBottom: 5, height: 60 },
+            })}
+        >
+            {isEmailVerified && <Tab.Screen name="Profile" component={ProfilePage} />}
+            {isUserLoggedIn && isEmailVerified && (
+                <>
+                    <Tab.Screen name="History" component={HistoryPage} />
+                    <Tab.Screen name="Scan" component={PoseDetection} />
+                    <Tab.Screen name="Browse" component={BrowsePage} />
+                </>
+            )}
+            <Tab.Screen name="Settings" component={SettingsScreen} />
+        </Tab.Navigator>
+    );
+};
+
+const SettingsScreen = () => {
+    const navigation = useNavigation();
+
+    const handleSignOut = () => {
+        auth.signOut()
+            .then(() => {
+                navigation.replace("Login");
+            })
+            .catch((error) => alert(error.message));
+    };
+
+    const goToLogin = () => {
+        navigation.navigate('Login');
+    };
+
+    return (
+        <ImageBackground
+            source={require('../assets/BlackBackground.png')}
+            style={styles.backgroundImage}
+            resizeMode="cover"
+        >
+            <ScrollView contentContainerStyle={styles.scrollContainer}>
+                <View style={styles.container}>
+                    <CollapsibleSection title="Introduction">
+                        <Text style={styles.description}>
+                            Say hello to a fitness journey reimagined by Eoin, Due, and Pedro
+                        </Text>
+                        <Text style={styles.description}>United by a love for Fitness, Cybersecurity, and Tech.</Text>
+                        <Text style={styles.description}>Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
+                        </Text>
+                        <Text style={styles.description}>We've baked in some serious cybersecurity measures too, because your peace of mind matters to us. And yes, we're always getting better, thanks to Agile methodologies that let us evolve fast and keep things fresh.
+                        </Text>
+                    </CollapsibleSection>
+                    <CollapsibleSection title="About the App">
+                        <Text style={styles.description}>
+                            Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
+                            We've baked in some serious cybersecurity measures too, because your peace of mind matters to us.
+                        </Text>
+                    </CollapsibleSection>
+                    <View style={styles.horizontalContainer}>
+                        <CollapsibleSection title="Eoin">
+                            <Text style={styles.description}>
+                                Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
+                                We've baked in some serious cybersecurity measures too, because your peace of mind matters to us.
+                            </Text>
+                        </CollapsibleSection>
+                        <CollapsibleSection title="Pedro">
+                            <Text style={styles.description}>
+                                Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
+                                We've baked in some serious cybersecurity measures too, because your peace of mind matters to us.
+                            </Text>
+                        </CollapsibleSection>
+                        <CollapsibleSection title="Due">
+                            <Text style={styles.description}>
+                                Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
+                                We've baked in some serious cybersecurity measures too, because your peace of mind matters to us.
+                            </Text>
+                        </CollapsibleSection>
+                    </View>
+                    <TouchableOpacity style={styles.button} onPress={goToLogin}>
+                        <Text style={styles.buttonText}>Login/Register</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={styles.button} onPress={handleSignOut}>
+                        <Text style={styles.buttonText}>Sign Out</Text>
+                    </TouchableOpacity>
+                </View>
+            </ScrollView>
+        </ImageBackground>
+    );
+};
 
 const CollapsibleSection = ({ title, children }) => {
     const [isOpen, setIsOpen] = useState(false);
@@ -33,140 +161,18 @@ const CollapsibleSection = ({ title, children }) => {
     );
 };
 
-const SettingsScreen = () => {
-    const navigation = useNavigation();
-
-    const handleSignOut = () => {
-        auth.signOut()
-            .then(() => {
-                navigation.replace("Login");
-            })
-            .catch((error) => alert(error.message));
-    };
-
-    const goToLogin = () => {
-        navigation.navigate('Login');
-    };
-
-    return (
-        <ScrollView contentContainerStyle={styles.scrollContainer}>
-            <Image source={HomePageLogo} style={styles.logo} resizeMode="contain" />
-            <View>
-                <CollapsibleSection title="Introduction">
-                    <Text style={styles.description}>
-                        Say hello to a fitness journey reimagined by Eoin, Due, and Pedro
-                    </Text>
-                    <Text style={styles.description}>United by a love for Fitness, Cybersecurity, and Tech.</Text>
-                    <Text style={styles.description}>Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
-                    </Text>
-                    <Text style={styles.description}>We've baked in some serious cybersecurity measures too, because your peace of mind matters to us. And yes, we're always getting better, thanks to Agile methodologies that let us evolve fast and keep things fresh.
-
-                    </Text>
-                </CollapsibleSection>
-                <CollapsibleSection title="About the App">
-                    <Text style={styles.description}>
-                        Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
-                        We've baked in some serious cybersecurity measures too, because your peace of mind matters to us.
-                    </Text>
-                </CollapsibleSection>
-            </View>
-            <View style={styles.horizontalContainer}>
-                <CollapsibleSection title="Eoin">
-                    <Text style={styles.description}>
-                        Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
-                        We've baked in some serious cybersecurity measures too, because your peace of mind matters to us.
-                    </Text>
-                </CollapsibleSection>
-
-                <CollapsibleSection title="Pedro">
-                    <Text style={styles.description}>
-                        Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
-                        We've baked in some serious cybersecurity measures too, because your peace of mind matters to us.
-                    </Text>
-                </CollapsibleSection>
-
-                <CollapsibleSection title="Due">
-                    <Text style={styles.description}>
-                        Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
-                        We've baked in some serious cybersecurity measures too, because your peace of mind matters to us.
-                    </Text>
-                </CollapsibleSection>
-            </View>
-
-            <TouchableOpacity style={styles.button} onPress={goToLogin}>
-                <Text style={styles.buttonText}>Login/Register</Text>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.button} onPress={handleSignOut}>
-                <Text style={styles.buttonText}>Sign Out</Text>
-            </TouchableOpacity>
-        </ScrollView>
-    );
-};
-
-const HomePage = () => {
-    const [isEmailVerified, setIsEmailVerified] = useState(false);
-    const [rerender, setRerender] = useState(false); // State to trigger re-render
-
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(user => {
-            if (user) {
-                setIsEmailVerified(user.emailVerified);
-                setRerender(prevState => !prevState); // Trigger re-render on auth state change
-            }
-        });
-
-        return unsubscribe;
-    }, []);
-
-    const isUserLoggedIn = !!auth.currentUser;
-
-    return (
-        <Tab.Navigator screenOptions={{
-            tabBarActiveTintColor: '#3498db',
-            tabBarInactiveTintColor: 'gray',
-            tabBarLabelStyle: { fontSize: 12 },
-            tabBarStyle: { paddingBottom: 5, height: 60 },
-        }}>
-            {isEmailVerified && <Tab.Screen name="Profile" component={ProfilePage} />}
-            {isUserLoggedIn && isEmailVerified && (
-                <>
-                    <Tab.Screen name="History" component={HistoryPage} />
-                    <Tab.Screen name="Scan" component={PoseDetection} />
-                    <Tab.Screen name="Browse" component={BrowsePage} />
-                </>
-            )}
-            <Tab.Screen name="Settings" component={SettingsScreen} />
-        </Tab.Navigator>
-    );
-};
-
 const styles = StyleSheet.create({
     scrollContainer: {
         flexGrow: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        paddingVertical: 20,
     },
-    infoContainer: {
-        borderWidth: 2,
-        borderColor: '#3498db',
-        borderRadius: 10,
-        padding: 10,
-        margin: 20,
-        alignItems: 'center',
+    container: {
+        flex: 1,
         justifyContent: 'center',
-    },
-
-    horizontalContainer: {
-        color: '#32CD32',
-        flexDirection: 'row', // Align children horizontally
-        justifyContent: 'space-around', // Distribute extra space around items
-        flexWrap: 'wrap', // Allow items to wrap to the next line if space is constrained
-    },
-
-    logo: {
-        width: '100%',
-        height: screenHeight * 0.3,
-        marginBottom: 20,
+        alignItems: 'center',
+        paddingHorizontal: 20,
     },
     sectionContainer: {
         width: '100%',
@@ -203,6 +209,17 @@ const styles = StyleSheet.create({
     buttonText: {
         color: '#fff',
         fontWeight: 'bold',
+    },
+    backgroundImage: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+    horizontalContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        flexWrap: 'wrap',
+        marginBottom: 20,
     },
 });
 

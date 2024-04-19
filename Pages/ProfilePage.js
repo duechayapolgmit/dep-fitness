@@ -3,6 +3,9 @@ import { View, Text, StyleSheet } from 'react-native';
 import * as Progress from 'react-native-progress';
 import { auth, db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
+import { ImageBackground } from 'react-native';
+import { BarChart } from 'react-native-chart-kit';
+import '../App.css';
 
 const ProfilePage = () => {
     const [progress, setProgress] = useState(0);
@@ -53,44 +56,95 @@ const ProfilePage = () => {
         };
     }, []);
 
+    const data = {
+        labels: ['Squats', 'Jumping Jacks', 'Push Ups', 'Planks'],
+        datasets: [{
+            data: [totalSquats, totalJumpingJacks, totalPushUps, totalPlanks],
+        }],
+    };
+
     return (
-        <View style={styles.container}>
-            {loggedIn && (
-                <>
-                    <Text style={styles.emailText}>Email: {auth.currentUser?.email}</Text>
-                    <Progress.Bar progress={progress} width={200} />
-                    <Text style={styles.totalSquatsText}>Total Squats: {totalSquats}</Text>
-                    <Text style={styles.totalText}>Total Jumping Jacks: {totalJumpingJacks}</Text>
-                    <Text style={styles.totalText}>Total Push Ups: {totalPushUps}</Text>
-                    <Text style={styles.totalText}>Total seconds doing plank: {totalPlanks}</Text>
-                </>
-            )}
-        </View>
+        <ImageBackground
+            source={require('../assets/BlackBackground.png')}
+            className="backgroundImage"
+            resizeMode="cover"
+            style={styles.backgroundImage}
+        >
+            <View style={styles.container}>
+
+                {loggedIn && (
+                    <>
+                        <Text style={styles.emailText}>Email: {auth.currentUser?.email}</Text>
+                        <View style={styles.titleContainer}>
+                            <Text style={styles.titleText}>Overall Scores</Text>
+                        </View>
+                        <Text style={styles.totalText}>Total Squats: {totalSquats}</Text>
+                        <Text style={styles.totalText}>Total Jumping Jacks: {totalJumpingJacks}</Text>
+                        <Text style={styles.totalText}>Total Push Ups: {totalPushUps}</Text>
+                        <Text style={styles.totalText}>Total seconds doing plank: {totalPlanks}</Text>
+                        <BarChart
+                            data={data}
+                            width={300}
+                            height={200}
+                            yAxisSuffix=""
+                            chartConfig={{
+                                backgroundGradientFrom: '#1E2923',
+                                backgroundGradientTo: '#08130D',
+                                color: (opacity = 1) => `rgba(26, 255, 146, ${opacity})`,
+                                strokeWidth: 2, // optional, default 3
+                                barPercentage: 0.5,
+                                useShadowColorFromDataset: false // optional
+                            }}
+                            style={styles.chart}
+                        />
+                    </>
+                )}
+            </View>
+        </ImageBackground>
     );
 };
 
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        justifyContent: 'flex-start',
+        justifyContent: 'center',
         alignItems: 'center',
-        paddingTop: 50,
         paddingHorizontal: 20,
+    },
+    backgroundImage: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+    titleContainer: {
+        backgroundColor: '#3498db',
+        paddingVertical: 10,
+        paddingHorizontal: 20,
+        borderRadius: 10,
+        marginBottom: 20,
+    },
+    titleText: {
+        fontSize: 24,
+        fontWeight: 'bold',
+        color: '#fff',
     },
     emailText: {
         fontSize: 18,
         fontWeight: 'bold',
         marginBottom: 10,
+        color: '#fff',
     },
-    totalSquatsText: {
-        fontSize: 18,
-        fontWeight: 'bold',
-        marginTop: 20,
+    progressBar: {
+        marginVertical: 20,
     },
     totalText: {
         fontSize: 18,
         fontWeight: 'bold',
         marginTop: 10,
+        color: '#fff',
+    },
+    chart: {
+        marginTop: 20,
     },
 });
 
