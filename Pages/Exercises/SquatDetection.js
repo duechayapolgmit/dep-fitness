@@ -13,11 +13,15 @@ const SquatDetection = () => {
   const canvasRef = useRef(null);
   const [squatCount, setSquatCount] = useState(0);
   const [kneeWidthStatus, setKneeWidthStatus] = useState("");
+  const [lastSquatTime, setLastSquatTime] = useState(0);
+  const [isInSquatPosition, setIsInSquatPosition] = useState(false);
   const [conditions, setConditions] = useState({
     headStraight: false,
     kneesShoulderWidthApart: false,
     squatDepthReached: false
   });
+
+  
 
 
   //-------------------------------------------------------------------------------------------------------------------------------------
@@ -55,6 +59,8 @@ const SquatDetection = () => {
     return () => poseLandmarker?.close();
   }, []);
 
+  
+
   useEffect(() => {
     const video = videoRef.current;
     const canvas = canvasRef.current;
@@ -86,12 +92,22 @@ const SquatDetection = () => {
             squatDepthReached: squatDepthIsReached
           }));
 
+          if (squatDepthIsReached) {
+            setIsInSquatPosition(true);
+          } else {
+            setIsInSquatPosition(false);
+          }
+
           // Update knee width status on screen
           setKneeWidthStatus(kneesAreShoulderWidthApart ? "Knees are shoulder-width apart" : "WARNING: Knees should be shoulder-width apart");
           
           //Squat Count
-          if (squatDepthIsReached) {  // Mark that the user is no longer in a squat
-            setSquatCount(prevCount => prevCount + 1);  // Increment squat count on rising
+          if (!isInSquatPosition && squatDepthIsReached) {
+            const currentTime = new Date().getTime();
+            if (currentTime > lastSquatTime + 2000) {
+              setSquatCount(prevCount => prevCount + 1);
+              setLastSquatTime(currentTime);
+            }
           }
         });
       }

@@ -48,8 +48,34 @@ const PlankDetection = () => {
 
   useEffect(() => {
     const video = videoRef.current;
+    const constraints = { video: true };
+
+    let stream = null;
+
+    const enableStream = async () => {
+      try {
+        stream = await navigator.mediaDevices.getUserMedia(constraints);
+        video.srcObject = stream;
+        video.play();
+      } catch (error) {
+        console.error("Stream access error:", error);
+      }
+    };
+
+    enableStream();
+
+    return () => {
+      if (stream) {
+        stream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, []); // Empty dependency array ensures this runs only once on mount
+
+  useEffect(() => {
+    const video = videoRef.current;
     const canvas = canvasRef.current;
-    if (!canvas) return;
+    if (!canvas || !video || !poseLandmarker) return;
+
     const ctx = canvas.getContext("2d");
     const drawingUtils = new DrawingUtils(ctx);
 
@@ -57,7 +83,7 @@ const PlankDetection = () => {
 
     const predictWebcam = async () => {
       setIsDetecting(true);
-      const result = await poseLandmarker?.detect(video);
+      const result = await poseLandmarker.detect(video);
       setIsDetecting(false);
 
       ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -68,42 +94,37 @@ const PlankDetection = () => {
           setBodyStraight(bodyIsStraight);
           if (bodyIsStraight) {
             if (!startTimeRef.current) {
-              startTimeRef.current = new Date().getTime();
+              startTimeRef.current = Date.now(); // Capture the start time when the body first becomes straight
             }
           } else {
             if (startTimeRef.current) {
-              const endTime = new Date().getTime();
-              setPlankTime(plankTime + (endTime - startTimeRef.current) / 1000);
-              startTimeRef.current = null;
+              const endTime = Date.now();
+              const duration = (endTime - startTimeRef.current) / 1000; // Calculate duration in seconds
+              setPlankTime(prevTime => prevTime + duration); // Add duration to the existing plank time
+              startTimeRef.current = null; // Reset start time
             }
           }
         });
       }
-      requestAnimationFrame(predictWebcam);
+      animationFrameId = requestAnimationFrame(predictWebcam);
     };
 
-    if (poseLandmarker && video) {
-      const constraints = { video: true };
-      navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-        video.srcObject = stream;
-        video.addEventListener("loadeddata", () => {
-          predictWebcam();
-        });
-      });
-    }
+    video.addEventListener("canplay", predictWebcam);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
-      if (video.srcObject) {
-        video.srcObject.getTracks().forEach(track => track.stop());
-      }
+      video.removeEventListener("canplay", predictWebcam);
     };
-  }, [poseLandmarker, plankTime]);
+  }, [poseLandmarker]);
 
   const checkBodyStraight = (landmarks, ctx, drawingUtils) => {
+    if (!landmarks || landmarks.length === 0) {
+      console.error('No landmarks detected.');
+      return false;
+    }
     const shoulderHipLineAngle = calculateAngle(landmarks[11], landmarks[23], landmarks[24]);
     setAngle(shoulderHipLineAngle);
-    const isBodyNotStraight = shoulderHipLineAngle > 10; // Tighter threshold for straightness
+    const isBodyNotStraight = shoulderHipLineAngle > 50; // Tighter threshold for straightness
     setShowWarning(isBodyNotStraight);
     const color = isBodyNotStraight ? "red" : "black";
     drawingUtils.drawLandmarks(landmarks, { color: color });
@@ -119,7 +140,7 @@ const PlankDetection = () => {
   };
 
   const saveSessionData = () => {
-    if (plankTime > 0) {
+    if (plankTime > 0 && user) {
       db.collection("plankSessions").add({
         userEmail: user.email,
         userId: user.uid,
@@ -128,13 +149,13 @@ const PlankDetection = () => {
         bodyStraight: bodyStraight,
         createdAt: new Date()
       })
-      .then(() => {
-        console.log("Session data successfully written!");
-        setPlankTime(0); // Reset time after saving
-      })
-      .catch((error) => {
-        console.error("Error writing session data: ", error);
-      });
+        .then(() => {
+          console.log("Session data successfully written!");
+          setPlankTime(0); // Reset time after saving
+        })
+        .catch((error) => {
+          console.error("Error writing session data: ", error);
+        });
     } else {
       console.log("No user logged in or no planking detected");
     }
