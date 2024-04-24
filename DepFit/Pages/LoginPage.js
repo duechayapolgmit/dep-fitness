@@ -3,40 +3,41 @@ import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/core";
 
+// Function to sanitize user input by removing dangerous characters
+const sanitizeInput = (input) => {
+    // Regular expression to remove dangerous characters
+    const sanitizedInput = input.replace(/[<>]/g, '');
+    return sanitizedInput;
+}
+
 const MAX_LOGIN_ATTEMPTS = 3; // Max number of login attempts allowed
 const LOGIN_TIMEOUT_DURATION = 60 * 1000; // Timeout duration (1 minute)
 let loginAttempts = 0;
 let lastLoginAttemptTime = 0;
 
-
 const LoginPage = () => {
-    const [email, setEmail] = useState('')
-    const [password, setPassword] = useState('')
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     const [loginError, setLoginError] = useState('');
 
-   const navigation = useNavigation()
+    const navigation = useNavigation();
 
-    useEffect(() => {
-        const unsubscribe = auth.onAuthStateChanged(user => {
-            if(user){
-                navigation.navigate("Home")
-            }
-        }) 
-
-        return unsubscribe
-    }, [])
-
+    // Function to handle user registration
     const handleRegister = () => {
+        // Sanitize email and password inputs
+        const sanitizedEmail = sanitizeInput(email);
+        const sanitizedPassword = sanitizeInput(password);
+
         // Password requirements
         const minLength = 8;
-        const hasUpperCase = /[A-Z]/.test(password);
-        const hasLowerCase = /[a-z]/.test(password);
-        const hasNumbers = /\d/.test(password);
-        const hasSpecialChars = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
-    
+        const hasUpperCase = /[A-Z]/.test(sanitizedPassword);
+        const hasLowerCase = /[a-z]/.test(sanitizedPassword);
+        const hasNumbers = /\d/.test(sanitizedPassword);
+        const hasSpecialChars = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(sanitizedPassword);
+
         // Check if password meets requirements
         if (
-            password.length < minLength ||
+            sanitizedPassword.length < minLength ||
             !hasUpperCase ||
             !hasLowerCase ||
             !hasNumbers ||
@@ -45,21 +46,27 @@ const LoginPage = () => {
             alert("Password must be at least 8 characters long and include at least one uppercase letter, one lowercase letter, one number, and one special character.");
             return;
         }
-    
-        // If password meets complexity requirements, proceed with registration
-        auth.createUserWithEmailAndPassword(email, password).then(userCredentials => {
-            const user = userCredentials.user;
-            console.log(user.email);
-        }).catch(error => alert(error.message));
-    }
-    
 
-    const handleLogin = () => { 
+        // If password meets complexity requirements, proceed with registration
+        auth.createUserWithEmailAndPassword(sanitizedEmail, sanitizedPassword)
+            .then(userCredentials => {
+                const user = userCredentials.user;
+                console.log(user.email);
+            })
+            .catch(error => alert(error.message));
+    }
+
+    // Function to handle user login
+    const handleLogin = () => {
+        // Sanitize email and password inputs
+        const sanitizedEmail = sanitizeInput(email);
+        const sanitizedPassword = sanitizeInput(password);
+
         // Check if login attempts have exceeded the maximum limit
         if (loginAttempts >= MAX_LOGIN_ATTEMPTS && Date.now() - lastLoginAttemptTime < LOGIN_TIMEOUT_DURATION) {
             // Update error message each second
             const intervalId = setInterval(() => {
-                const remainingTime = Math.ceil((lastLoginAttemptTime + LOGIN_TIMEOUT_DURATION - Date.now()) / 1000); // Convert milliseconds to seconds 
+                const remainingTime = Math.ceil((lastLoginAttemptTime + LOGIN_TIMEOUT_DURATION - Date.now()) / 1000); // Convert milliseconds to seconds
                 if (remainingTime <= 0) {
                     // Clear interval when timeout is over
                     clearInterval(intervalId);
@@ -72,7 +79,7 @@ const LoginPage = () => {
         }
 
         // Attempt login
-        auth.signInWithEmailAndPassword(email, password)
+        auth.signInWithEmailAndPassword(sanitizedEmail, sanitizedPassword)
             .then(userCredentials => {
                 const user = userCredentials.user;
                 console.log("Logged in with: ", user.email);
@@ -89,19 +96,22 @@ const LoginPage = () => {
             });
     };
 
-    return(
+    return (
         <KeyboardAvoidingView style={styles.container} behavior="padding">
-
             <View style={styles.inputContainer}>
-                <TextInput placeholder="Email" 
-                value={email} 
-                onChangeText={text => setEmail(text)}
-                style={styles.input}></TextInput>
-                <TextInput placeholder="Password" 
-                value={password} 
-                onChangeText={text => setPassword(text)}
-                style={styles.input}
-                secureTextEntry></TextInput>
+                <TextInput
+                    placeholder="Email"
+                    value={email}
+                    onChangeText={text => setEmail(text)}
+                    style={styles.input}
+                />
+                <TextInput
+                    placeholder="Password"
+                    value={password}
+                    onChangeText={text => setPassword(text)}
+                    style={styles.input}
+                    secureTextEntry
+                />
             </View>
 
             {loginError ? <Text style={styles.errorText}>{loginError}</Text> : null}
@@ -117,12 +127,11 @@ const LoginPage = () => {
                     <Text style={styles.buttonOutline}>Register</Text>
                 </TouchableOpacity>
             </View>
-
         </KeyboardAvoidingView>
     );
 };
 
-export default LoginPage
+export default LoginPage;
 
 const styles = StyleSheet.create({
     container: {
@@ -131,7 +140,7 @@ const styles = StyleSheet.create({
         alignItems: 'center',
     },
     inputContainer: {
-        width: '80%',
+        width:'80%',
         marginBottom: 20,
     },
     input: {
