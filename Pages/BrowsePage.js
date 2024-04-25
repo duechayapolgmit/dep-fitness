@@ -20,7 +20,7 @@ const BrowsePage = () => {
         const options = {
             method: 'GET',
             headers: {
-                'X-RapidAPI-Key': '96851120ccmshb39b41e6b1c0264p146630jsn5de326583dfe',
+                'X-RapidAPI-Key': `${process.env.RAPID_API_KEY}`,
                 'X-RapidAPI-Host': 'exercisedb.p.rapidapi.com'
             }
         };
