@@ -32,21 +32,23 @@ const HistoryPage = () => {
                 const querySnapshot = await getDocs(q);
                 return querySnapshot.docs.map(doc => ({
                     id: doc.id,
-                    type: collectionName, // differentiate between squat and jumping jack sessions
+                    type: collectionName,
                     ...doc.data(),
-                    createdAt: doc.data().createdAt ? doc.data().createdAt.toDate().toLocaleString() : 'No Date'
+                    createdAt: doc.data().createdAt ? new Date(doc.data().createdAt.seconds * 1000) : new Date() // Converting Firestore Timestamp to Date
                 }));
             };
 
             try {
                 // Fetch data in parallel
-                const [squatSessions, jumpingJackSessions] = await Promise.all([
+                const [squatSessions, jumpingJackSessions, pushupSessions, plankSessions] = await Promise.all([
                     fetchFromCollection('squatSessions'),
                     fetchFromCollection('jumpingJackSessions'),
                     fetchFromCollection('pushupSessions'),
                     fetchFromCollection('plankSessions')
                 ]);
-                const workoutsData = [...squatSessions, ...jumpingJackSessions];
+                const workoutsData = [...squatSessions, ...jumpingJackSessions, ...pushupSessions, ...plankSessions];
+                // Sort workouts by createdAt date in descending order
+                workoutsData.sort((a, b) => b.createdAt - a.createdAt);
                 setWorkouts(workoutsData);
                 console.log('Fetched Workouts:', workoutsData);
             } catch (error) {
@@ -77,45 +79,30 @@ const HistoryPage = () => {
     return (
         <ImageBackground
             source={require('../assets/BlackBackground.png')}
-            className = "backgroundImage"
+            className="backgroundImage"
             resizeMode="cover"
         >
-        <div style={{ padding: '20px', height: '100vh', overflowY: 'auto' }}>
-            <h1>Workout History</h1>
-            <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center' }}>
-                {workouts.map(workout => (
-                    <div key={workout.id} style={cardStyle}>
-                        <h2>{workout.type === 'squatSessions' ? 'Squat Session' : workout.type === 'jumpingJackSessions' ? 'Jumping Jack Session' : workout.type === 'plankSessions' ? 'Plank Session' : 'Pushup Session'}</h2>
-                        {workout.type === 'squatSessions' ? (
-                            <>
-                                <p><strong>Squat Count:</strong> {workout.squatCount}</p>
-                                <p><strong>Head Angle:</strong> {workout.headAngle}</p>
-                                <p><strong>Knee Status:</strong> {workout.kneeStatus}</p>
-                            </>
-                        ) : workout.type === 'jumpingJackSessions' ? (
-                            <>
-                                <p><strong>Jump Count:</strong> {workout.jumpingJackCount}</p>
-                                <p><strong>Feet Status:</strong> {workout.feetStatus}</p>
-                            </>
-                        ) : workout.type === 'plankSessions' ? (
-                            <>
-                                <p><strong>Duration:</strong> {workout.plankTime}</p>
-                                <p><strong>Form Rating:</strong> {workout.bodyStraight}</p>
-                            </>
-                        ) : (
-                            <>
-                                <p><strong>Pushup Count:</strong> {workout.pushUpCount}</p>
-                                <p><strong>Form Quality:</strong> {workout.conditions}</p>
-                            </>
-                        )}
-                        <p><strong>Date:</strong> {workout.createdAt}</p>
-                    </div>
-                ))}
+            <div style={{ padding: '20px', height: '100vh', overflowY: 'auto' }}>
+                <h1>Workout History</h1>
+                <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center' }}>
+                    {workouts.map(workout => (
+                        <div key={workout.id} style={cardStyle}>
+                            <h2>{workout.type === 'squatSessions' ? 'Squat Session' :
+                                workout.type === 'jumpingJackSessions' ? 'Jumping Jack Session' :
+                                    workout.type === 'plankSessions' ? 'Plank Session' : 'Pushup Session'}</h2>
+                            <p><strong>{workout.type === 'squatSessions' ? 'Squat Count' :
+                                workout.type === 'jumpingJackSessions' ? 'Jump Count' :
+                                    workout.type === 'plankSessions' ? 'Duration' : 'Pushup Count'}:
+                            </strong> {workout[workout.type === 'squatSessions' ? 'squatCount' :
+                                workout.type === 'jumpingJackSessions' ? 'jumpingJackCount' : workout.type === 'plankSessions' ? 'plankTime' :
+                                    'pushUpCount']}</p>
+                            <p><strong>Date:</strong> {workout.createdAt.toLocaleString()}</p>
+                        </div>
+                    ))}
+                </div>
             </div>
-        </div>
         </ImageBackground>
     );
 }
-
 
 export default HistoryPage;

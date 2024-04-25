@@ -46,16 +46,34 @@ const BrowsePage = () => {
         }
     };
 
+    const handleSelectExercise = (exercise) => {
+        if (exercise) {
+            setSelectedExercise(exercise);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setSelectedExercise(null);
+    };
+
     const renderItem = ({ item }) => (
-        <TouchableOpacity style={styles.itemContainer} onPress={() => setSelectedExercise(item)}>
+        <ImageBackground
+            source={require('../assets/BlackBackground.png')}
+            className="backgroundImage"
+            resizeMode="cover"
+            style={styles.container}
+        >
+        <TouchableOpacity style={styles.itemContainer} onPress={() => handleSelectExercise(item)}>
             <Image style={styles.itemImage} source={{ uri: item.gifUrl }} />
             <Text style={styles.itemName}>{item.name}</Text>
             <Text style={styles.itemDetails}>Equipment: {item.equipment}</Text>
             <Text numberOfLines={1} style={styles.itemDetails}>Instructions: {item.instructions?.join(" ")}</Text>
         </TouchableOpacity>
+        </ImageBackground>
     );
 
     const renderBodyPartButton = ({ item }) => (
+        
         <TouchableOpacity style={styles.suggestionButton} onPress={() => fetchExercises(item)}>
             <Text style={styles.suggestionText}>{item}</Text>
         </TouchableOpacity>
@@ -91,13 +109,27 @@ const BrowsePage = () => {
                 keyExtractor={(item) => item.id.toString()}
             />
             <Modal
-                animationType="slide"
-                transparent={true}
-                visible={selectedExercise !== null}
-                onRequestClose={() => setSelectedExercise(null)}
-            >
-                {/* Existing modal code */}
-            </Modal>
+    animationType="slide"
+    transparent={true}
+    visible={selectedExercise !== null}
+    onRequestClose={handleCloseModal}
+>
+    <View style={styles.centeredView}>
+        <View style={styles.modalView}>
+            {selectedExercise && (
+                <>
+                    <Image source={{ uri: selectedExercise.gifUrl }} style={styles.modalImage} />
+                    <Text style={styles.modalTitle}>{selectedExercise.name}</Text>
+                    <Text style={styles.modalText}>Equipment: {selectedExercise.equipment}</Text>
+                    <Text style={styles.modalText}>Target Muscle: {selectedExercise.target}</Text>
+                    <Text style={styles.modalText}>Body Part: {selectedExercise.bodyPart}</Text>
+                    <Text style={styles.modalText}>Instructions: {selectedExercise.instructions?.join(" ")}</Text>
+                    <Button title="Close" onPress={handleCloseModal} />
+                </>
+            )}
+        </View>
+    </View>
+</Modal>
         </ImageBackground>
     );
 };
@@ -133,17 +165,17 @@ const styles = StyleSheet.create({
     },
     suggestionsContainer: {
         flexDirection: 'row',
-        paddingHorizontal: 10, // Adjust horizontal padding
-        marginTop: 10, // Add margin top to separate from the search input
-        marginBottom: 70, // Add margin bottom for spacing
+        paddingHorizontal: 10,
+        marginTop: 10,
+        marginBottom: 70,
     },
     suggestionButton: {
         backgroundColor: '#e0e0e0',
-        paddingVertical: 10, // Adjust vertical padding
-        paddingHorizontal: 15, // Adjust horizontal padding
+        paddingVertical: 10,
+        paddingHorizontal: 15,
         borderRadius: 5,
-        justifyContent: 'center', // Center the text horizontally
-        alignItems: 'center', // Center the text vertically
+        justifyContent: 'center',
+        alignItems: 'center',
     },
     suggestionText: {
         fontSize: 15,

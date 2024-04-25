@@ -111,20 +111,20 @@ const SettingsScreen = () => {
                     <View style={styles.horizontalContainer}>
                         <CollapsibleSection title="Eoin">
                             <Text style={styles.description}>
-                                Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
-                                We've baked in some serious cybersecurity measures too, because your peace of mind matters to us.
+                                Hiya, I'm Eoin! I took care of the front-end of the project, the firestore storage, Api calls, Hosting and most importantly,
+                                 the intergration of the CNN (Convolutional Nueral Network) Exercises!
+
                             </Text>
                         </CollapsibleSection>
                         <CollapsibleSection title="Pedro">
                             <Text style={styles.description}>
-                                Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
-                                We've baked in some serious cybersecurity measures too, because your peace of mind matters to us.
+                            Heyo, My name is Pedro, I worked on the cybersecurity, ethical hacking, authorization of this project!
                             </Text>
                         </CollapsibleSection>
                         <CollapsibleSection title="Due">
                             <Text style={styles.description}>
-                                Our app isn't just any fitness tracker; it's a personal coach powered by a smart CNN model.
-                                We've baked in some serious cybersecurity measures too, because your peace of mind matters to us.
+                            Hello, I am Due. I took care of all the DevOps tasks relating to this project as well as planning 
+                            out testing plans (and actual testing) for this project. I also handle some architecture relating to this project as well.
                             </Text>
                         </CollapsibleSection>
                     </View>

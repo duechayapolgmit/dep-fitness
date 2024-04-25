@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
 import { db, auth } from '../../firebase.js';
+import { ImageBackground } from 'react-native';
+import '../../App.css';
 
 const PushUpDetection = () => {
   const [user, setUser] = useState(null);
@@ -77,13 +79,14 @@ const PushUpDetection = () => {
 
           setConditions(prevConditions => ({
             ...prevConditions,
+            bodyStraight: !showWarning,
             elbowsTucked: elbowsAreTucked,
             chestNearFloor: chestIsNearFloor
           }));
 
           setElbowStatus(elbowsAreTucked ? "Elbows are properly tucked" : "WARNING: Keep elbows close to body");
 
-          if (chestIsNearFloor) {
+          if (chestIsNearFloor && elbowsAreTucked) {
             setPushUpCount(prevCount => prevCount + 1);
           }
         });
@@ -110,7 +113,7 @@ const PushUpDetection = () => {
   }, [poseLandmarker]);
 
   const checkBodyStraight = (landmarks, ctx, drawingUtils) => {
-    const bodyStraightnessAngle = calculateAngle(landmarks[11], landmarks[24], landmarks[23]); // Example using shoulder and hip points
+    const bodyStraightnessAngle = calculateAngle(landmarks[11], landmarks[24], landmarks[23]); // using shoulder and hip points
     setAngle(bodyStraightnessAngle);
     const isBodyNotStraight = bodyStraightnessAngle > 20; // Set a threshold angle for straightness
     setShowWarning(isBodyNotStraight);
@@ -120,14 +123,20 @@ const PushUpDetection = () => {
   };
 
   const checkElbowsTucked = (landmarks) => {
-    const elbowAngle = calculateAngle(landmarks[11], landmarks[13], landmarks[15]); // Left arm example
+    const elbowAngle = calculateAngle(landmarks[11], landmarks[13], landmarks[15]); // Left arm 
     return elbowAngle < 45; // Less than 45 degrees is considered 'tucked'
   };
 
   const checkChestNearFloor = (landmarks) => {
-    const chestY = landmarks[11].y; // Using upper body landmark
-    const floorY = canvasRef.current.height; // Simulated floor level on canvas
-    return chestY > 0.9 * floorY; // Check if chest is near the 'floor'
+    const chestY = landmarks[11].y; // Y-coordinate of the chest
+    const leftHandY = landmarks[15].y; // Y-coordinate of the left wrist
+    const rightHandY = landmarks[16].y; // Y-coordinate of the right wrist
+  
+    // Calculate the average Y-coordinate of both hands to establish a "floor" level
+    const handsAverageY = (leftHandY + rightHandY) / 2;
+  
+    // Check if the chest Y-coordinate is at or below the average hand Y-coordinate
+    return chestY >= handsAverageY;
   };
 
   const calculateAngle = (A, B, C) => {
@@ -161,6 +170,11 @@ const PushUpDetection = () => {
   };
 
   return (
+    <ImageBackground
+            source={require('../../assets/BlackBackground.png')}
+            className="backgroundImage"
+            resizeMode="cover"
+        >
     <div className="app-container">
       <div className="video-card">
         {isDetecting && <p>Detecting landmarks...</p>}
@@ -175,6 +189,7 @@ const PushUpDetection = () => {
         <button onClick={saveSessionData}>Save Session</button>
       </div>
     </div>
+    </ImageBackground>
   );
 };
 

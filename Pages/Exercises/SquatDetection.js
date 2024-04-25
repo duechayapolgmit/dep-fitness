@@ -1,7 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
 import { db, auth } from '../../firebase.js';
-import { firestore } from 'firebase/firestore';
+import { ImageBackground } from 'react-native';
+import '../../App.css';
 
 const SquatDetection = () => {
   const [user, setUser] = useState(null);
@@ -21,7 +22,7 @@ const SquatDetection = () => {
     squatDepthReached: false
   });
 
-  
+
 
 
   //-------------------------------------------------------------------------------------------------------------------------------------
@@ -59,7 +60,7 @@ const SquatDetection = () => {
     return () => poseLandmarker?.close();
   }, []);
 
-  
+
 
   useEffect(() => {
     const video = videoRef.current;
@@ -85,7 +86,7 @@ const SquatDetection = () => {
 
           const kneesAreShoulderWidthApart = checkKneesShoulderWidthApart(landmark);
           const squatDepthIsReached = checkSquatDepthReached(landmark);
-          
+
           setConditions(prevConditions => ({
             ...prevConditions,
             kneesShoulderWidthApart: kneesAreShoulderWidthApart,
@@ -100,7 +101,7 @@ const SquatDetection = () => {
 
           // Update knee width status on screen
           setKneeWidthStatus(kneesAreShoulderWidthApart ? "Knees are shoulder-width apart" : "WARNING: Knees should be shoulder-width apart");
-          
+
           //Squat Count
           if (!isInSquatPosition && squatDepthIsReached) {
             const currentTime = new Date().getTime();
@@ -114,7 +115,7 @@ const SquatDetection = () => {
       requestAnimationFrame(predictWebcam);
     };
 
- //-------------------------------------------------------------------------------------------------------------------------------------
+    //-------------------------------------------------------------------------------------------------------------------------------------
 
     if (poseLandmarker && video) {
       const constraints = { video: true };
@@ -142,21 +143,6 @@ const SquatDetection = () => {
     return Math.acos((BC * BC + AB * AB - AC * AC) / (2 * BC * AB)) * (180 / Math.PI);
   };
 
-  const checkSquatConditions = (landmarks) => {
-    const headStraight = checkHeadStraight(landmarks);
-    const kneesShoulderWidthApart = checkKneesShoulderWidthApart(landmarks);
-    const squatDepthReached = checkSquatDepthReached(landmarks);
-
-    // Update conditions state
-    setConditions({ headStraight, kneesShoulderWidthApart, squatDepthReached });
-
-    // Placeholder
-    if (headStraight && kneesShoulderWidthApart && squatDepthReached) {
-      setSquatCount((prevCount) => prevCount + 1);
-    }
-  };
-
-
   const saveSessionData = () => {
     if (squatCount > 0) {
       db.collection("squatSessions").add({
@@ -168,20 +154,20 @@ const SquatDetection = () => {
         conditions: conditions,
         createdAt: new Date()
       })
-      .then(() => {
-        console.log("Session data successfully written!");
-        setSquatCount(0); // Reset squat count after saving
-      })
-      .catch((error) => {
-        console.error("Error writing session data: ", error);
-      });
+        .then(() => {
+          console.log("Session data successfully written!");
+          setSquatCount(0); // Reset squat count after saving
+        })
+        .catch((error) => {
+          console.error("Error writing session data: ", error);
+        });
     } else {
       console.log("No user logged in or no squats counted");
     }
   };
-  
 
- //-------------------------------------------------------------------------------------------------------------------------------------
+
+  //-------------------------------------------------------------------------------------------------------------------------------------
 
   // Conditions
 
@@ -193,19 +179,19 @@ const SquatDetection = () => {
     setAngle(verticalAlignmentAngle);
 
     // Determine if the alignment is within an acceptable vertical range
-    // Here, an angle close to 180 degrees means the shoulders and neck are aligned in a straight line
+    // Here, an angle close to 55 degrees means the shoulders and neck are aligned in a straight line
     const isOutOfLine = verticalAlignmentAngle < 50 || verticalAlignmentAngle > 62;
     setShowWarning(isOutOfLine);
 
     // Determine color based on head position
     const color = isOutOfLine ? "red" : "black";
 
-    // Draw landmarks and connectors with appropriate colors
+    // Drawing the landmarks and connectors
+    drawingUtils.drawConnectors(landmarks, PoseLandmarker.POSE_CONNECTIONS, { color: color });
     drawingUtils.drawLandmarks(landmarks, {
       color: color,
-      radius: (data) => data.from ? DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 20) : 0
+      radius: (data) => data.from ? DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 20) : 4  // Default radius is 4 if no 'z' value, the z value makes the nodes freak out
     });
-    drawingUtils.drawConnectors(landmarks, PoseLandmarker.POSE_CONNECTIONS, { color: color });
   };
 
 
@@ -228,29 +214,35 @@ const SquatDetection = () => {
     // First, calculate the midpoints if you're using individual left and right points
     const hipMidpointY = (landmarks[23].y + landmarks[24].y) / 2;
     const kneeMidpointY = (landmarks[25].y + landmarks[26].y) / 2;
-  
+
     // Check if the hips are at or below the knees (greater y value indicates a lower position in many coordinate systems)
     return hipMidpointY >= kneeMidpointY;
   };
-  
- //-------------------------------------------------------------------------------------------------------------------------------------
 
- return (
-  <div className="app-container">
-    <div className="video-card">
-      {isDetecting && <p>Detecting landmarks...</p>}
-      <video ref={videoRef} autoPlay className="video-stream" />
-      <canvas ref={canvasRef} className="video-overlay" />
+  //-------------------------------------------------------------------------------------------------------------------------------------
+
+  return (
+    <ImageBackground
+            source={require('../../assets/BlackBackground.png')}
+            className="backgroundImage"
+            resizeMode="cover"
+        >
+    <div className="app-container">
+      <div className="video-card">
+        {isDetecting && <p>Detecting landmarks...</p>}
+        <video ref={videoRef} autoPlay className="video-stream" />
+        <canvas ref={canvasRef} className="video-overlay" />
+      </div>
+      <div className="info-card">
+        <p>Squat Count: {squatCount}</p>
+        <p>Angle: {angle ? `${angle.toFixed(2)}°` : 'N/A'}</p>
+        <p>Head Correction: {showWarning ? "Out of Correct Angle Space" : "In Correct Angle Space"}</p>
+        <p>Knees: {kneeWidthStatus}</p>
+        <button onClick={saveSessionData}>Save Session</button>
+      </div>
     </div>
-    <div className="info-card">
-      <p>Squat Count: {squatCount}</p>
-      <p>Angle: {angle ? `${angle.toFixed(2)}°` : 'N/A'}</p>
-      <p>Head Correction: {showWarning ? "Out of Correct Angle Space" : "In Correct Angle Space"}</p>
-      <p>Knees: {kneeWidthStatus}</p>
-      <button onClick={saveSessionData}>Save Session</button>
-    </div>
-  </div>
-);
+    </ImageBackground>
+  );
 };
 
 

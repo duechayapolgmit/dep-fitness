@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
 import { db, auth } from '../../firebase.js';
+import { ImageBackground } from 'react-native';
+import '../../App.css';
 
 const PlankDetection = () => {
   const [user, setUser] = useState(null);
@@ -162,6 +164,11 @@ const PlankDetection = () => {
   };
 
   return (
+    <ImageBackground
+            source={require('../../assets/BlackBackground.png')}
+            className="backgroundImage"
+            resizeMode="cover"
+        >
     <div className="app-container">
       <div className="video-card">
         {isDetecting && <p>Detecting landmarks...</p>}
@@ -175,6 +182,7 @@ const PlankDetection = () => {
         <button onClick={saveSessionData}>Save Session</button>
       </div>
     </div>
+    </ImageBackground>
   );
 };
 

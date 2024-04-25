@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
-import * as Progress from 'react-native-progress';
 import { auth, db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { ImageBackground } from 'react-native';
@@ -46,7 +45,7 @@ const ProfilePage = () => {
                 fetchWorkoutTotals('squatSessions', setTotalSquats, 'squatCount');
                 fetchWorkoutTotals('jumpingJackSessions', setTotalJumpingJacks, 'jumpingJackCount');
                 fetchWorkoutTotals('pushupSessions', setTotalPushUps, 'pushupCount');
-                fetchWorkoutTotals('plankSessions', setTotalPlanks, 'duration'); // Adjust if your 'plank' has a different count field
+                fetchWorkoutTotals('plankSessions', setTotalPlanks, 'plankTime'); 
             }
         });
 
@@ -76,7 +75,7 @@ const ProfilePage = () => {
                     <>
                         <Text style={styles.emailText}>Email: {auth.currentUser?.email}</Text>
                         <View style={styles.titleContainer}>
-                            <Text style={styles.titleText}>Overall Scores</Text>
+                            <Text style={styles.titleText}>Overall Score</Text>
                         </View>
                         <Text style={styles.totalText}>Total Squats: {totalSquats}</Text>
                         <Text style={styles.totalText}>Total Jumping Jacks: {totalJumpingJacks}</Text>

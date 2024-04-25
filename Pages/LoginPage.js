@@ -5,6 +5,13 @@ import { useNavigation } from "@react-navigation/core";
 import HomePageLogo from '../assets/HomePageLogo.png';
 import '../App.css';
 
+// Function to sanitize user input by removing dangerous characters
+const sanitizeInput = (input) => {
+    // Regular expression to remove dangerous characters
+    const sanitizedInput = input.replace(/[<>]/g, '');
+    return sanitizedInput;
+}
+
 const MAX_LOGIN_ATTEMPTS = 3; // Max number of login attempts allowed
 const LOGIN_TIMEOUT_DURATION = 60 * 1000; // Timeout duration (1 minute)
 let loginAttempts = 0;
@@ -16,9 +23,7 @@ const LoginPage = () => {
     const [loginError, setLoginError] = useState('');
     const [showLogin, setShowLogin] = useState(false);
 
-
     const navigation = useNavigation();
-
 
     useEffect(() => {
         const unsubscribe = auth.onAuthStateChanged(user => {
@@ -39,16 +44,20 @@ const LoginPage = () => {
     };
 
     const handleRegister = () => {
+        // Sanitize email and password inputs
+        const sanitizedEmail = sanitizeInput(email);
+        const sanitizedPassword = sanitizeInput(password);
+
         // Password requirements
         const minLength = 8;
-        const hasUpperCase = /[A-Z]/.test(password);
-        const hasLowerCase = /[a-z]/.test(password);
-        const hasNumbers = /\d/.test(password);
-        const hasSpecialChars = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(password);
+        const hasUpperCase = /[A-Z]/.test(sanitizedPassword);
+        const hasLowerCase = /[a-z]/.test(sanitizedPassword);
+        const hasNumbers = /\d/.test(sanitizedPassword);
+        const hasSpecialChars = /[!@#$%^&*()_+\-=[\]{};':"\\|,.<>/?]/.test(sanitizedPassword);
 
         // Check if password meets requirements
         if (
-            password.length < minLength ||
+            sanitizedPassword.length < minLength ||
             !hasUpperCase ||
             !hasLowerCase ||
             !hasNumbers ||
@@ -59,7 +68,7 @@ const LoginPage = () => {
         }
 
         // If password meets complexity requirements, proceed with registration
-        auth.createUserWithEmailAndPassword(email, password)
+        auth.createUserWithEmailAndPassword(sanitizedEmail, sanitizedPassword)
             .then(userCredentials => {
                 // Send verification email
                 userCredentials.user.sendEmailVerification()
@@ -74,6 +83,10 @@ const LoginPage = () => {
     };
 
     const handleLogin = () => {
+        // Sanitize email and password inputs
+        const sanitizedEmail = sanitizeInput(email);
+        const sanitizedPassword = sanitizeInput(password);
+
         // Check if login attempts have exceeded the maximum limit
         if (loginAttempts >= MAX_LOGIN_ATTEMPTS && Date.now() - lastLoginAttemptTime < LOGIN_TIMEOUT_DURATION) {
             // Update error message each second
@@ -91,7 +104,7 @@ const LoginPage = () => {
         }
 
         // Attempt login if email is verified
-        auth.signInWithEmailAndPassword(email, password)
+        auth.signInWithEmailAndPassword(sanitizedEmail, sanitizedPassword)
             .then(userCredentials => {
                 const user = userCredentials.user;
                 if (user.emailVerified) {
@@ -182,8 +195,6 @@ const styles = StyleSheet.create({
         borderRadius: 10,
         width: 200,
         height: 200,
-
-
     },
     imageButton: {
         marginBottom: 20,
@@ -233,7 +244,6 @@ const styles = StyleSheet.create({
         textShadowOffset: { width: 1, height: 1 },
         textShadowRadius: 3,
     },
-
     errorText: {
         color: 'red',
         marginBottom: 10,

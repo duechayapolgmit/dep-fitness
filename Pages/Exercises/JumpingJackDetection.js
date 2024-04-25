@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
 import { db, auth } from '../../firebase.js';
+import { ImageBackground } from 'react-native';
+import '../../App.css';
 
 const JumpingJackDetection = () => {
   const [user, setUser] = useState(null);
@@ -142,11 +144,16 @@ const JumpingJackDetection = () => {
           console.error("Error writing session data: ", error);
         });
     } else {
-      console.log("No user logged in or no jumping jacks counted");
+      console.log("No user logged in or No jumping jacks counted");
     }
   };
 
   return (
+    <ImageBackground
+            source={require('../../assets/BlackBackground.png')}
+            className="backgroundImage"
+            resizeMode="cover"
+        >
     <div className="app-container">
       <div className="video-card">
         {isDetecting && <p>Detecting landmarks...</p>}
@@ -159,6 +166,7 @@ const JumpingJackDetection = () => {
         <button onClick={saveSessionData}>Save Session</button>
       </div>
     </div>
+    </ImageBackground>
   );
 };
 
