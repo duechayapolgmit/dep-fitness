@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
 import { View, TextInput, Button, Text, FlatList, StyleSheet, Alert, Modal, TouchableOpacity, Image, ScrollView, ImageBackground } from 'react-native';
-import '../App.css';
 
 const BrowsePage = () => {
     const [searchQuery, setSearchQuery] = useState('');

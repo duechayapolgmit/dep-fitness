@@ -75,6 +75,17 @@ const styles = StyleSheet.create({
     flex: 1,
 
   },
+  webcam: {
+    position: "absolute",
+    marginLeft: "auto",
+    marginRight: "auto",
+    left: 0,
+    right: 0,
+    textAlign: "center",
+    zIndex: 9,
+    width: "1280px",
+    height: "720px",
+  },
   backgroundImage: {
     flex: 1,
     width: '100%',

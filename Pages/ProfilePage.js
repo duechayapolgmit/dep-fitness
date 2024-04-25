@@ -4,7 +4,6 @@ import { auth, db } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { ImageBackground } from 'react-native';
 import { BarChart } from 'react-native-chart-kit';
-import '../App.css';
 
 const ProfilePage = () => {
     const [progress, setProgress] = useState(0);

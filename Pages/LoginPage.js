@@ -3,7 +3,6 @@ import { KeyboardAvoidingView, StyleSheet, Text, TextInput, TouchableOpacity, Vi
 import { auth } from '../firebase';
 import { useNavigation } from "@react-navigation/core";
 import HomePageLogo from '../assets/HomePageLogo.png';
-import '../App.css';
 
 // Function to sanitize user input by removing dangerous characters
 const sanitizeInput = (input) => {
