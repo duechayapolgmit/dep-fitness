@@ -1,0 +1,30 @@
+{
+  "files": {
+    "main.css": "/static/css/main.1a41ce57.css",
+    "main.js": "/static/js/main.6eaac3c5.js",
+    "static/js/432.1072c489.js": "/static/js/432.1072c489.js",
+    "static/media/Background2.jpg": "/static/media/Background2.1ee55cda4d15ca771c7b.jpg",
+    "static/media/HomePageLogo.png": "/static/media/HomePageLogo.7989ce857cc03d7ebd80.png",
+    "static/media/MaterialCommunityIcons.ttf": "/static/media/MaterialCommunityIcons.5d42b4e60858731e7b65.ttf",
+    "static/media/Squat.png": "/static/media/Squat.689b063ec1d11af0a684.png",
+    "static/media/FontAwesome.ttf": "/static/media/FontAwesome.1e59d2330b4c6deb84b3.ttf",
+    "static/media/JumpingJack.png": "/static/media/JumpingJack.85639096e2ed44220692.png",
+    "static/media/PushUp.png": "/static/media/PushUp.0286f6b4ad1167ab3c09.png",
+    "static/media/Plank.png": "/static/media/Plank.fdf43a3012c1201329a4.png",
+    "static/media/BlackBackground.png": "/static/media/BlackBackground.b8b54b54f832696b03ac.png",
+    "favicon.ico": "/favicon.ico",
+    "index.html": "/index.html",
+    "favicon-32.png": "/favicon-32.png",
+    "favicon-16.png": "/favicon-16.png",
+    "serve.json": "/serve.json",
+    "manifest.json": "/manifest.json",
+    "main.1a41ce57.css.map": "/static/css/main.1a41ce57.css.map",
+    "main.6eaac3c5.js.map": "/static/js/main.6eaac3c5.js.map",
+    "432.1072c489.js.map": "/static/js/432.1072c489.js.map"
+  },
+  "entrypoints": [
+    "static/js/432.1072c489.js",
+    "static/css/main.1a41ce57.css",
+    "static/js/main.6eaac3c5.js"
+  ]
+}
