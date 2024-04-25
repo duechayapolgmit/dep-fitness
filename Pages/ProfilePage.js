@@ -44,7 +44,7 @@ const ProfilePage = () => {
             if (user) {
                 fetchWorkoutTotals('squatSessions', setTotalSquats, 'squatCount');
                 fetchWorkoutTotals('jumpingJackSessions', setTotalJumpingJacks, 'jumpingJackCount');
-                fetchWorkoutTotals('pushupSessions', setTotalPushUps, 'pushupCount');
+                fetchWorkoutTotals('pushUpSessions', setTotalPushUps, 'pushUpCount');
                 fetchWorkoutTotals('plankSessions', setTotalPlanks, 'plankTime'); 
             }
         });

@@ -43,7 +43,7 @@ const HistoryPage = () => {
                 const [squatSessions, jumpingJackSessions, pushupSessions, plankSessions] = await Promise.all([
                     fetchFromCollection('squatSessions'),
                     fetchFromCollection('jumpingJackSessions'),
-                    fetchFromCollection('pushupSessions'),
+                    fetchFromCollection('pushUpSessions'),
                     fetchFromCollection('plankSessions')
                 ]);
                 const workoutsData = [...squatSessions, ...jumpingJackSessions, ...pushupSessions, ...plankSessions];
@@ -87,16 +87,25 @@ const HistoryPage = () => {
                 <div style={{ display: 'flex', flexWrap: 'wrap', gap: '20px', justifyContent: 'center' }}>
                     {workouts.map(workout => (
                         <div key={workout.id} style={cardStyle}>
-                            <h2>{workout.type === 'squatSessions' ? 'Squat Session' :
-                                workout.type === 'jumpingJackSessions' ? 'Jumping Jack Session' :
-                                    workout.type === 'plankSessions' ? 'Plank Session' : 'Pushup Session'}</h2>
-                            <p><strong>{workout.type === 'squatSessions' ? 'Squat Count' :
-                                workout.type === 'jumpingJackSessions' ? 'Jump Count' :
-                                    workout.type === 'plankSessions' ? 'Duration' : 'Pushup Count'}:
-                            </strong> {workout[workout.type === 'squatSessions' ? 'squatCount' :
-                                workout.type === 'jumpingJackSessions' ? 'jumpingJackCount' : workout.type === 'plankSessions' ? 'plankTime' :
-                                    'pushUpCount']}</p>
-                            <p><strong>Date:</strong> {workout.createdAt.toLocaleString()}</p>
+                            <h2>
+                                {workout.type === 'squatSessions' ? 'Squat Session' :
+                                    workout.type === 'jumpingJackSessions' ? 'Jumping Jack Session' :
+                                        workout.type === 'plankSessions' ? 'Plank Session' :
+                                            workout.type === 'pushUpSessions' ? 'Pushup Session' : 'Unknown Session'}
+                            </h2>
+                            <p>
+                                <strong>
+                                    {workout.type === 'squatSessions' ? 'Squat Count' :
+                                        workout.type === 'jumpingJackSessions' ? 'Jump Count' :
+                                            workout.type === 'plankSessions' ? 'Duration' :
+                                                workout.type === 'pushUpSessions' ? 'Pushup Count' : 'Unknown Count'}:
+                                </strong>
+                                {workout[workout.type === 'squatSessions' ? 'squatCount' :
+                                    workout.type === 'jumpingJackSessions' ? 'jumpingJackCount' :
+                                        workout.type === 'plankSessions' ? 'plankTime' :
+                                            workout.type === 'pushUpSessions' ? 'pushUpCount' : 'N/A']}
+                            </p>
+                            <p><strong>Date:</strong> {new Date(workout.createdAt).toLocaleString()}</p>
                         </div>
                     ))}
                 </div>
