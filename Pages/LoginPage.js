@@ -26,6 +26,7 @@ const LoginPage = () => {
     const navigation = useNavigation();
 
     useEffect(() => {
+        console.log(process.env.FIREBASE_API_KEY)
         const unsubscribe = auth.onAuthStateChanged(user => {
             if (user) {
                 if (user.emailVerified) {
