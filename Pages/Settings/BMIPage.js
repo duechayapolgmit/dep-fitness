@@ -3,7 +3,7 @@ import { StyleSheet, View, TextInput, TouchableOpacity, Text, Alert } from "reac
 import { useNavigation } from "@react-navigation/core";
 import { getBMI, getBMICategory } from "../../Services/BMIService";
 
-const BMIPage = (props) => {
+const BMIPage = () => {
     const [height, setHeight] = React.useState();
     const [weight, setWeight] = React.useState();
 
@@ -80,10 +80,17 @@ const BMIInfo = (props) => {
 }
 
 const styles = StyleSheet.create({
+    scrollContainer: {
+        flexGrow: 1,
+        justifyContent: 'center',
+        alignItems: 'center',
+        paddingVertical: 20,
+    },
     container: {
         flex: 1,
         justifyContent: 'center',
         alignItems: 'center',
+        paddingHorizontal: 20,
     },
     inputContainer: {
         width: '80%',
@@ -95,16 +102,52 @@ const styles = StyleSheet.create({
         marginBottom: 10,
         borderRadius: 5,
     },
-    button: {
+    sectionContainer: {
+        width: '100%',
+        marginTop: 10,
+    },
+    sectionHeader: {
+        padding: 10,
         backgroundColor: '#3498db',
+        borderRadius: 10,
+    },
+    sectionTitle: {
+        color: '#fff',
+        fontWeight: 'bold',
+        textAlign: 'center',
+    },
+    sectionContent: {
+        padding: 10,
+        backgroundColor: '#f0f0f0',
+        borderRadius: 5,
+    },
+    description: {
+        fontSize: 16,
+        textAlign: 'center',
+        color: '#666',
+    },
+    button: {
+        backgroundColor: '#FF6347',
         padding: 15,
         borderRadius: 10,
         alignItems: 'center',
         marginBottom: 15,
-        marginTop: 60,
+        marginTop: 30,
     },
     buttonText: {
         color: '#fff',
+        fontWeight: 'bold',
+    },
+    backgroundImage: {
+        flex: 1,
+        width: '100%',
+        height: '100%',
+    },
+    horizontalContainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        flexWrap: 'wrap',
+        marginBottom: 20,
     },
 });
 

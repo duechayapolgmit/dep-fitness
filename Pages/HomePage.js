@@ -84,6 +84,10 @@ const SettingsScreen = () => {
         navigation.navigate('Login');
     };
 
+    const goToBMI = () => {
+        navigation.navigate('BMI');
+    };
+
     return (
         <ImageBackground
             source={require('../assets/BlackBackground.png')}
@@ -128,6 +132,9 @@ const SettingsScreen = () => {
                             </Text>
                         </CollapsibleSection>
                     </View>
+                    <TouchableOpacity style={styles.button} onPress={goToBMI}>
+                        <Text style={styles.buttonText}>BMI Calculator</Text>
+                    </TouchableOpacity>
                     <TouchableOpacity style={styles.button} onPress={goToLogin}>
                         <Text style={styles.buttonText}>Login/Register</Text>
                     </TouchableOpacity>
