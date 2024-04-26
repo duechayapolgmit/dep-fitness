@@ -6,13 +6,13 @@ import 'firebase/compat/firestore';
 
 // Your web app's Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyBsxO6b9xJDcv0fRYL8DXPGRAjD6Xb87m8",
-    authDomain: "depfit-311ae.firebaseapp.com",
-    projectId: "depfit-311ae",
-    storageBucket: "depfit-311ae.appspot.com",
-    messagingSenderId: "938565214214",
-    appId: "1:938565214214:web:4eb97e8e3483a865882387",
-    measurementId: "G-NQ17D55NWM"
+    apiKey: `${process.env.FIREBASE_API_KEY}`,
+    authDomain: `${process.env.FIREBASE_PROJECT_ID}.firebaseapp.com`,
+    projectId: `${process.env.FIREBASE_PROJECT_ID}`,
+    storageBucket: `${process.env.FIREBASE_PROJECT_ID}.appspot.com`,
+    messagingSenderId: `${process.env.FIREBASE_SENDER_ID}`,
+    appId: `${process.env.FIREBASE_APP_ID}`,
+    measurementId: `${process.env.MEASUREMENT_ID}`
 };
 
 

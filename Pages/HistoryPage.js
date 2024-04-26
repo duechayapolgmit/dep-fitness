@@ -2,7 +2,6 @@ import React, { useEffect, useState } from 'react';
 import { db, auth } from '../firebase';
 import { collection, query, where, getDocs } from 'firebase/firestore';
 import { ImageBackground } from 'react-native';
-import '../App.css';
 
 const HistoryPage = () => {
     const [workouts, setWorkouts] = useState([]);

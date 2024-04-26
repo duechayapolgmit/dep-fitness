@@ -2,7 +2,6 @@ import React, { useState, useEffect, useRef } from "react";
 import { PoseLandmarker, FilesetResolver, DrawingUtils } from "@mediapipe/tasks-vision";
 import { db, auth } from '../../firebase.js';
 import { ImageBackground } from 'react-native';
-import '../../App.css';
 
 const SquatDetection = () => {
   const [user, setUser] = useState(null);

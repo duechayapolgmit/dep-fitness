@@ -1,0 +1,58 @@
+name: Android Build (Development)
+
+on:
+  push:
+    branches: ["dev", "depf-*", "DEPF-*"]
+
+jobs:
+  android_build:
+    name: Android Build
+    environment: development
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v3
+
+      - name: Setup Node
+        uses: actions/setup-node@master
+        with:
+          node-version: 20.x
+          cache: 'npm'
+          cache-dependency-path: package-lock.json
+
+      - name: Setup EAS
+        uses: expo/expo-github-action@v8
+        with:
+          expo-version: latest
+          eas-version: latest
+          token: ${{ secrets.EXPO_TOKEN }}
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Create env file
+        run: |
+          touch .env
+          echo FIREBASE_API_KEY="${{ secrets.FIREBASE_API_KEY }}" > .env
+          echo FIREBASE_APP_ID="${{ env.FIREBASE_APP_ID }}" > .env
+          echo FIREBASE_MEASUREMENT_ID="${{ env.FIREBASE_MEASUREMENT_ID }}" > .env
+          echo FIREBASE_PROJECT_ID="${{ env.PROJECT_ID }}" > .env
+          echo FIREBASE_SENDER_ID="${{ env.FIREBASE_SENDER_ID }}" > .env
+
+      - name: Run tests via Jest
+        run: npm test
+
+      - name: Build app
+        run: |
+          eas build --local --non-interactive \
+          --platform android --profile dev \
+          --output=./app-build \
+            
+      - name: Rename file
+        run: mv ./app-build app-build.apk
+              
+      - name: Upload Artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: depfitness-build-android
+          path: ./app-build.apk
