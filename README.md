@@ -1,6 +1,8 @@
 # dep-fitness
 Fitness application project for final year project in ATU Galway 2023-2024.
 
+**Note that, due to complications of packaging the application, this version of the application does not contain any MediaPipe functionalities. This includes the posture detection mechanism of the application. You can find existing feature for the web version of the application either in `main-web` branch or on [https://dep-fitness.onrender.com/](https://dep-fitness.onrender.com/) for the live version.**
+
 ## Branches
 There are three main branches that corresponds to the environment that is setup:
 * `main` = main branch of the project, using the production environment, with live code and data
