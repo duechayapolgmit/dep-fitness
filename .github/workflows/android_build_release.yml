@@ -8,6 +8,7 @@ on:
 jobs:
   android_build:
     name: Android Build
+    environment: production
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
