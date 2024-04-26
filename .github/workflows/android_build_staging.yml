@@ -35,10 +35,10 @@ jobs:
         run: |
           touch .env
           echo FIREBASE_API_KEY="${{ secrets.FIREBASE_API_KEY }}" > .env
-          echo FIREBASE_APP_ID="${{ env.FIREBASE_APP_ID }}" > .env
-          echo FIREBASE_MEASUREMENT_ID="${{ env.FIREBASE_MEASUREMENT_ID }}" > .env
-          echo FIREBASE_PROJECT_ID="${{ env.PROJECT_ID }}" > .env
-          echo FIREBASE_SENDER_ID="${{ env.FIREBASE_SENDER_ID }}" > .env
+          echo FIREBASE_APP_ID="${{ vars.FIREBASE_APP_ID }}" > .env
+          echo FIREBASE_MEASUREMENT_ID="${{ vars.FIREBASE_MEASUREMENT_ID }}" > .env
+          echo FIREBASE_PROJECT_ID="${{ vars.PROJECT_ID }}" > .env
+          echo FIREBASE_SENDER_ID="${{ vars.FIREBASE_SENDER_ID }}" > .env
           echo RAPID_API_KEY="${{ secrets.RAPID_API_KEY }}" > .env
 
       - name: Build app
