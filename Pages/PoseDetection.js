@@ -2,8 +2,8 @@ import React, { useState, useEffect } from 'react';
 import { ScrollView, View, Text, Image, TouchableOpacity, StyleSheet, Dimensions, ImageBackground } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import SquatLogo from '../assets/squat.png'; // Make sure to adjust your import paths
-import JumpingJack from '../assets/JumpingJack.png'; // Make sure to adjust your import paths
-import Plank from '../assets/Plank.png'; // Make sure to adjust your import paths
+import JumpingJack from '../assets/jumpingJack.png'; // Make sure to adjust your import paths
+import Plank from '../assets/plank.png'; // Make sure to adjust your import paths
 import PushUp from '../assets/PushUp.png'; // Make sure to adjust your import paths
 
 function PoseDetection() {
