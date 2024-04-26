@@ -38,6 +38,7 @@ jobs:
           echo FIREBASE_MEASUREMENT_ID="${{ env.FIREBASE_MEASUREMENT_ID }}" > .env
           echo FIREBASE_PROJECT_ID="${{ env.PROJECT_ID }}" > .env
           echo FIREBASE_SENDER_ID="${{ env.FIREBASE_SENDER_ID }}" > .env
+          echo RAPID_API_KEY="${{ secrets.RAPID_API_KEY }}" > .env
 
       - name: Build app
         run: |
@@ -79,7 +80,7 @@ jobs:
         id: create_release
         uses: DasBen/release-on-push-action@master
         with:
-          bump_version_scheme: patch      # Change when necessary
+          bump_version_scheme: major      # Change when necessary
           tag_prefix: "v"
           use_github_release_notes: true
       
